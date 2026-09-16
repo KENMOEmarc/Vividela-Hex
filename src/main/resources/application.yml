@@ -1,0 +1,221 @@
+# =============================================================================
+# APPLICATION.YML — Spring Boot main configuration
+#
+# Profile hierarchy:
+#   application.yml         → shared values (always loaded)
+#   application-dev.yml     → overrides for development environment
+#   application-prod.yml    → overrides for production
+#
+# The ${VAR:default} syntax reads the environment variable VAR first;
+# if absent, it uses the provided default value.
+# =============================================================================
+
+# --- Application identity ---
+
+spring:
+  application:
+    name: vividela-backend
+
+  # ---------------------------------------------------------------------------
+  # DEFAULT ACTIVE PROFILE
+  # BUGFIX : without this setting, Spring Boot activates the "default" profile
+  # which inherits all verbose settings from application.yml (show-sql: true,
+  # logging DEBUG…). In production, override via environment variable:
+  #   SPRING_PROFILES_ACTIVE=prod
+  # ---------------------------------------------------------------------------
+#  profiles:
+#    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  # ---------------------------------------------------------------------------
+  # DATA SOURCE — MySQL via Spring Data JPA / Hibernate
+  # ---------------------------------------------------------------------------
+  datasource:
+    # JDBC connection string for MySQL 8.x
+    # Configurable via environment variables (used by docker-compose.yml
+    # to point to the "mysql" container service rather than localhost)
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # HikariCP — high-performance connection pool (included by default)
+    hikari:
+      maximum-pool-size: 10          # Maximum number of simultaneous connections
+      minimum-idle: 2                # Connections kept idle
+      connection-timeout: 30000      # Maximum time to wait for a connection (ms)
+      idle-timeout: 600000           # Maximum idle time before closing (ms)
+
+  # ---------------------------------------------------------------------------
+  # JPA / HIBERNATE
+  # ---------------------------------------------------------------------------
+  jpa:
+    open-in-view: false
+    hibernate:
+      # ddl-auto strategies :
+      #   none        → no schema action
+      #   validate    → verifies that the schema matches entities
+      #   update      → updates the schema (avoid in production)
+      #   create      → recreates the schema at startup (loses data)
+      #   create-drop → same + drops at stop (ideal for tests)
+      ddl-auto: update
+    show-sql: true                   # Displays SQL queries in logs
+    properties:
+      hibernate:
+        format_sql: true             # Formats displayed SQL for readability
+
+  # ---------------------------------------------------------------------------
+  # MAIL — SMTP configuration for JavaMailSender (email notifications)
+  # Example Gmail: MAIL_USERNAME=you@gmail.com, MAIL_PASSWORD=app password
+  # (https://myaccount.google.com/apppasswords)
+  # ---------------------------------------------------------------------------
+  mail:
+    host: ${MAIL_HOST:}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+  # ---------------------------------------------------------------------------
+  # JACKSON — JSON serialization
+  # ---------------------------------------------------------------------------
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false   # LocalDateTime → ISO-8601 ("2024-01-15T10:30:00")
+    time-zone: UTC
+
+  # ---------------------------------------------------------------------------
+  # SPRING AI — GOOGLE GENAI (GEMINI) — customer review sentiment analysis
+  # (see GeminiReviewAnalysisService). Free API key: aistudio.google.com/apikey
+  # NEVER set project-id/location here: that would switch the client to
+  # Vertex AI mode (GCP credentials) and the Gemini API key would be rejected.
+  # ---------------------------------------------------------------------------
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY:}
+        chat:
+          model: ${GEMINI_MODEL:gemini-2.5-flash}
+          temperature: 0.2           # Low creativity: classification, not free generation
+
+# ---------------------------------------------------------------------------
+# SERVER
+# ---------------------------------------------------------------------------
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api             # Prefix for all URLs: /api/...
+  error:
+    include-message: always          # Include error message in response
+    include-binding-errors: always
+
+# ---------------------------------------------------------------------------
+# JWT — JSON Web Token configuration
+# ---------------------------------------------------------------------------
+security:
+  jwt:
+    blacklist-cleanup:
+      # Delay between two executions of the purge job for expired revoked tokens
+      # in the revoked_tokens table (ms). Default: 1 hour.
+      fixed-delay-ms: ${JWT_BLACKLIST_CLEANUP_FIXED_DELAY_MS}
+
+# ---------------------------------------------------------------------------
+# NOTIFICATIONS — Default sender for outgoing emails
+# ---------------------------------------------------------------------------
+notifications:
+  mail-from: ${MAIL_FROM}
+  # ADDITION: automatic retry of failed EMAIL/SMS sends + alerting staff
+  # on definitive failure (see NotificationServiceImpl —
+  # retryFailedChannelNotifications / escalateExhaustedNotificationFailures).
+  retry:
+    # Maximum number of retry attempts after the initial send.
+    max-attempts: ${NOTIFICATIONS_RETRY_MAX_ATTEMPTS:3}
+    # Maximum number of notifications retried per job execution.
+    batch-size: ${NOTIFICATIONS_RETRY_BATCH_SIZE:100}
+    # Delay between two retry job executions (ms). Default: 5 minutes.
+    fixed-delay-ms: ${NOTIFICATIONS_RETRY_FIXED_DELAY_MS:300000}
+    # Delay before the first execution after startup (ms). Default: 1 minute.
+    initial-delay-ms: ${NOTIFICATIONS_RETRY_INITIAL_DELAY_MS:60000}
+    # Cron expression for the escalation job to staff. Default: every 15 minutes.
+    escalation-cron: ${NOTIFICATIONS_RETRY_ESCALATION_CRON:0 */15 * * * *}
+
+# ---------------------------------------------------------------------------
+# SHOP IDENTITY — displayed on PDF tickets/receipts (see ShopProperties)
+# Externalised here rather than hard-coded to avoid recompilation on every
+# change (phone, name in case of multi‑shop, etc.)
+# ---------------------------------------------------------------------------
+vividela:
+  shop:
+    name: ${SHOP_NAME:Vividela}
+    phone: ${SHOP_PHONE:+237 000 000 000}
+    email: ${SHOP_EMAIL:contact@vividela.com}
+  # ADDITION: loyalty program parameters (see LoyaltyProperties) —
+  # makes functional a previously purely decorative programme.
+  loyalty:
+    point-value: ${LOYALTY_POINT_VALUE:50}
+    earn-rate-per-currency-unit: ${LOYALTY_EARN_RATE:0.01}
+    max-points-per-order: ${LOYALTY_MAX_POINTS_PER_ORDER:1000}
+    points-per-cfa: ${LOYALTY_POINTS_PER_CFA:1}
+  # ADDITION: validity duration of a deposit ticket (barcode) before
+  # automatic transition to EXPIRED status (see TicketServiceImpl).
+  ticket:
+    validity-days: ${TICKET_VALIDITY_DAYS:90}
+    expiration-days: ${TICKET_EXPIRATION_DAYS:3}
+
+
+jwt:
+  # HS256 signing secret key (min 256 bits = 32 characters)
+  # IN PRODUCTION: set the JWT_SECRET environment variable with a random
+  # key of at least 32 characters. No default is provided here to avoid
+  # committing a secret to the repository.
+  secret: ${JWT_SECRET}
+  # Access token validity duration (in milliseconds)
+  expiration: ${JWT_EXPIRATION}
+  # Authorization header prefix
+  prefix: Bearer
+  header: Authorization
+
+# ---------------------------------------------------------------------------
+# TWILIO — SMS sending (free trial account at twilio.com/try-twilio)
+# In "trial" mode, Twilio only allows sending to verified numbers in the
+# console, and prefixes each SMS with a message indicating the trial account
+# — this is normal and free.
+# ---------------------------------------------------------------------------
+twilio:
+  enabled: ${TWILIO_ENABLED}
+  account-sid: ${TWILIO_ACCOUNT_SID}
+  auth-token: ${TWILIO_AUTH_TOKEN}
+  from-number: ${TWILIO_FROM_NUMBER}
+
+# ---------------------------------------------------------------------------
+# ACTUATOR — Exposes only /actuator/health (used by Docker HEALTHCHECK
+# and orchestrators). No internal details exposed publicly.
+# ---------------------------------------------------------------------------
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+# ---------------------------------------------------------------------------
+# LOGGING
+# ---------------------------------------------------------------------------
+logging:
+  level:
+    root: info
+    com.template.auth: debug         # Detailed logs for our package
+    org.springframework.security: debug
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql: trace
+    org.springframework.security.config.annotation.authentication.configuration.InitializeAuthenticationProviderBeanManagerConfigurer: error
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
