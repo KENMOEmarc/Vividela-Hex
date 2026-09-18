@@ -1,6 +1,6 @@
 package ken.vivid.adapter.output.security;
 
-import ken.vivid.domain.port.output.PasswordEncoder;
+import ken.vivid.application.port.output.auth.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -1,6 +1,6 @@
 package ken.vivid.adapter.input.web.security;
 
-import ken.vivid.domain.port.output.LoadUser;
+import ken.vivid.application.port.output.auth.LoadUser;
 import ken.vivid.domain.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -3,7 +3,7 @@ package ken.vivid.adapter.input.web.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ken.vivid.adapter.input.web.ApiResponse;
+import ken.vivid.adapter.input.web.payloads.ApiResponse;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

@@ -2,9 +2,15 @@ package ken.vivid.adapter.input.web;
 
 import jakarta.validation.Valid;
 import ken.vivid.adapter.input.web.dto.ProductDto;
-import ken.vivid.adapter.input.web.payloads.CreateProductRequest;
-import ken.vivid.adapter.input.web.payloads.UpdateProductRequest;
-import ken.vivid.domain.port.input.*;
+import ken.vivid.adapter.input.web.payloads.ApiResponse;
+import ken.vivid.adapter.input.web.payloads.product.CreateProductRequest;
+import ken.vivid.adapter.input.web.payloads.product.UpdateProductRequest;
+import ken.vivid.application.port.input.auth.GetCurrentUserUseCase;
+import ken.vivid.application.port.input.product.*;
+import ken.vivid.application.port.input.product.createProduct.CreateProductCommand;
+import ken.vivid.application.port.input.product.createProduct.CreateProductUseCase;
+import ken.vivid.application.port.input.product.updateUser.UpdateProductCommand;
+import ken.vivid.application.port.input.product.updateUser.UpdateProductUseCase;
 import ken.vivid.domain.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

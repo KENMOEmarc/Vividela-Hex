@@ -2,14 +2,15 @@ package ken.vivid.adapter.input.web;
 
 import jakarta.validation.Valid;
 import ken.vivid.adapter.input.web.dto.UserDto;
-import ken.vivid.adapter.input.web.payloads.ChangePasswordRequest;
-import ken.vivid.adapter.input.web.payloads.UpdateUserRequest;
-import ken.vivid.domain.port.input.ChangePasswordCommand;
-import ken.vivid.domain.port.input.ChangePasswordUseCase;
-import ken.vivid.domain.port.input.DeleteUserUseCase;
-import ken.vivid.domain.port.input.GetCurrentUserUseCase;
-import ken.vivid.domain.port.input.UpdateCommand;
-import ken.vivid.domain.port.input.UpdateUserUseCase;
+import ken.vivid.adapter.input.web.payloads.ApiResponse;
+import ken.vivid.adapter.input.web.payloads.auth.ChangePasswordRequest;
+import ken.vivid.adapter.input.web.payloads.auth.UpdateUserRequest;
+import ken.vivid.application.port.input.auth.updateUser.ChangePasswordCommand;
+import ken.vivid.application.port.input.auth.updateUser.ChangePasswordUseCase;
+import ken.vivid.application.port.input.auth.deleteUser.DeleteUserUseCase;
+import ken.vivid.application.port.input.auth.GetCurrentUserUseCase;
+import ken.vivid.application.port.input.auth.updateUser.UpdateCommand;
+import ken.vivid.application.port.input.auth.updateUser.UpdateUserUseCase;
 import ken.vivid.domain.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,6 @@ public class UserController {
         User actingUser = getCurrentUserUseCase.getCurrentUser(authentication.getName());
         User updated = updateUserUseCase.update(new UpdateCommand(
                 id,
-                actingUser.getId(),
                 actingUser.getRole(),
                 request.getFirstName(),
                 request.getLastName(),

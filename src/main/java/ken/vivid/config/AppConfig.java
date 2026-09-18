@@ -1,11 +1,15 @@
 package ken.vivid.config;
 
-import ken.vivid.domain.port.output.*;
-import ken.vivid.domain.service.AuthService;
-import ken.vivid.domain.service.ProductService;
-import ken.vivid.domain.service.StockAllocationPolicy;
-import ken.vivid.domain.service.StockService;
-import ken.vivid.domain.service.UserService;
+import ken.vivid.application.port.output.auth.*;
+import ken.vivid.application.port.output.product.*;
+import ken.vivid.application.port.output.product.stock.LoadStock;
+import ken.vivid.application.port.output.product.stock.SaveStock;
+import ken.vivid.application.port.output.product.stock.movement.SaveStockMovement;
+import ken.vivid.application.service.auth.AuthService;
+import ken.vivid.application.service.product.ProductService;
+import ken.vivid.application.service.product.StockAllocationPolicy;
+import ken.vivid.application.service.product.StockService;
+import ken.vivid.application.service.auth.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

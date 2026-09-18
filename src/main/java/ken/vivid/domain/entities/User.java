@@ -31,7 +31,8 @@ public class User {
                                   String userName, String phone, String email, String password) {
 
         if (firstName.isBlank() || lastName.isBlank() || userName.isBlank() ||
-                phone.isBlank() || email.isBlank() || password.isBlank() || role.describeConstable().isEmpty()) {
+                phone.isBlank() || email.isBlank() || password.isBlank() ||
+                role.describeConstable().isEmpty()) {
             throw new IllegalArgumentException("First name, last name, username, email, password, and role cannot be blank");
         }
 

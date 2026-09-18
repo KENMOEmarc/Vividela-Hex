@@ -1,6 +1,8 @@
 package ken.vivid.adapter.input.web;
 
-import ken.vivid.domain.exception.InvalidCredentialsException;
+import ken.vivid.adapter.exception.*;
+import ken.vivid.adapter.exception.auth.InvalidCredentialsException;
+import ken.vivid.adapter.input.web.payloads.ApiResponse;
 import ken.vivid.domain.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
