@@ -40,7 +40,7 @@ public class ProductService implements CreateProductUseCase, UpdateProductUseCas
 
         Instant now = Instant.now();
         Product product = Product.createProduct(
-                null,
+                command.productId(),
                 command.name(),
                 command.thresholdValue(),
                 command.measurementUnit(),

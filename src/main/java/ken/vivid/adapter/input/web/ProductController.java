@@ -49,6 +49,7 @@ public class ProductController {
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<ApiResponse<ProductDto>> create(@Valid @RequestBody CreateProductRequest request) {
         ProductDto product = ProductDto.from(createProductUseCase.create(new CreateProductCommand(
+                0L,
                 request.getName(),
                 request.getThresholdValue(),
                 request.getMeasurementUnit()

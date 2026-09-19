@@ -67,29 +67,21 @@ class ProductServiceTest {
             given(loadProduct.existsByName("Flour T55")).willReturn(true);
 
             assertThatThrownBy(() -> productService.create(
-                    new CreateProductCommand("Flour T55", BigDecimal.TEN, MeasurementUnit.KG)))
+                    new CreateProductCommand(1L, "Flour T55", BigDecimal.TEN, MeasurementUnit.KG)))
                     .isInstanceOf(DuplicateResourceException.class);
 
             verifyNoInteractions(saveProduct);
         }
 
-        /*
-         * Known issue: ProductService.create calls
-         * Product.createProduct(null, ...) while the domain factory
-         * rejects a null identifier ("ID cannot be null"). Product
-         * creation is therefore currently impossible.
-         * Expected fix: allow a null id at creation (the id is
-         * assigned by persistence). Re-enable this test afterwards.
-         */
         @Test
-        @Disabled("Issue: Product.createProduct rejects the null id passed by ProductService.create")
+//Fixed!   --    @Disabled("Issue: Product.createProduct rejects the null id passed by ProductService.create")
         @DisplayName("creates the product and persists it when the name is free")
         void createShouldSaveANewProduct() {
             given(loadProduct.existsByName("Flour T55")).willReturn(false);
             given(saveProduct.save(any(Product.class))).willAnswer(invocation -> invocation.getArgument(0));
-
-            productService.create(new CreateProductCommand("Flour T55", BigDecimal.TEN, MeasurementUnit.KG));
-
+            //When
+            productService.create(new CreateProductCommand(1L, "Flour T55", BigDecimal.TEN, MeasurementUnit.KG));
+            //Then
             verify(saveProduct).save(productCaptor.capture());
             assertThat(productCaptor.getValue().getName()).isEqualTo("Flour T55");
             assertThat(productCaptor.getValue().getThresholdValue()).isEqualByComparingTo("10");
