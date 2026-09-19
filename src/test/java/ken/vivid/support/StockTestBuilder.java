@@ -86,6 +86,10 @@ public final class StockTestBuilder {
         this.withoutExpirationDate = true;
         return this;
     }
+    public StockTestBuilder expiringInDays(int i) {
+        expirationDate.plus(i, ChronoUnit.DAYS);
+        return this;
+    }
 
     public Stock build() {
         Stock stock = Stock.createStock(id, productId, quantity, updatedAt, entryDate, unitPrice, expirationDate);
@@ -104,4 +108,5 @@ public final class StockTestBuilder {
             throw new IllegalStateException("Unable to force field " + fieldName + " to null", e);
         }
     }
+
 }
