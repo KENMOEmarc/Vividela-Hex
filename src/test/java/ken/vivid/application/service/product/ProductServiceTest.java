@@ -58,11 +58,11 @@ class ProductServiceTest {
     private ArgumentCaptor<Product> productCaptor;
 
     @Nested
-    @DisplayName("create")
+    @DisplayName("Create")
     class Create {
 
         @Test
-        @DisplayName("rejects a product whose name already exists, without persisting anything")
+        @DisplayName("Rejects a product whose name already exists, without persisting anything")
         void createShouldThrowWhenNameAlreadyExists() {
             given(loadProduct.existsByName("Flour T55")).willReturn(true);
 
@@ -98,11 +98,11 @@ class ProductServiceTest {
     }
 
     @Nested
-    @DisplayName("getById / getAllProducts")
+    @DisplayName("GetById / GetAllProducts")
     class Read {
 
         @Test
-        @DisplayName("returns the requested product")
+        @DisplayName("Returns the requested product")
         void getByIdShouldReturnTheProduct() {
             Product product = aProduct().withId(3L).withName("Sugar").build();
             given(loadProduct.loadById(3L)).willReturn(Optional.of(product));
@@ -111,7 +111,7 @@ class ProductServiceTest {
         }
 
         @Test
-        @DisplayName("fails when the product does not exist")
+        @DisplayName("Fails when the product does not exist")
         void getByIdShouldThrowWhenProductNotFound() {
             given(loadProduct.loadById(404L)).willReturn(Optional.empty());
 
@@ -121,7 +121,7 @@ class ProductServiceTest {
         }
 
         @Test
-        @DisplayName("returns the whole catalogue without filtering")
+        @DisplayName("Returns the whole catalogue without filtering")
         void getAllProductsShouldReturnEverythingFromThePort() {
             Product flour = aProduct().withId(1L).withName("Flour").build();
             Product sugar = aProduct().withId(2L).withName("Sugar").build();
@@ -132,11 +132,11 @@ class ProductServiceTest {
     }
 
     @Nested
-    @DisplayName("update")
+    @DisplayName("Update")
     class Update {
 
         @Test
-        @DisplayName("fails when the product to update does not exist")
+        @DisplayName("Fails when the product to update does not exist")
         void updateShouldThrowWhenProductNotFound() {
             given(loadProduct.loadById(404L)).willReturn(Optional.empty());
 
@@ -148,7 +148,7 @@ class ProductServiceTest {
         }
 
         @Test
-        @DisplayName("rejects renaming a product with a name already taken")
+        @DisplayName("Rejects renaming a product with a name already taken")
         void updateShouldThrowWhenNewNameIsAlreadyTaken() {
             Product target = aProduct().withId(1L).withName("Flour").build();
             given(loadProduct.loadById(1L)).willReturn(Optional.of(target));
@@ -162,7 +162,7 @@ class ProductServiceTest {
         }
 
         @Test
-        @DisplayName("skips the uniqueness check when the name is unchanged")
+        @DisplayName("Skips the uniqueness check when the name is unchanged")
         void updateShouldSkipUniquenessCheckWhenNameIsUnchanged() {
             Product target = aProduct().withId(1L).withName("Flour").build();
             given(loadProduct.loadById(1L)).willReturn(Optional.of(target));
@@ -175,7 +175,7 @@ class ProductServiceTest {
         }
 
         @Test
-        @DisplayName("applies the new values and refreshes the updated timestamp")
+        @DisplayName("Applies the new values and refreshes the updated timestamp")
         void updateShouldApplyNewValuesAndRefreshUpdatedAt() {
             Product target = aProduct().withId(1L).withName("Flour")
                     .withThresholdValue("10").withMeasurementUnit(MeasurementUnit.KG).build();
@@ -194,11 +194,11 @@ class ProductServiceTest {
     }
 
     @Nested
-    @DisplayName("delete")
+    @DisplayName("Delete")
     class Delete {
 
         @Test
-        @DisplayName("fails when the product does not exist")
+        @DisplayName("Fails when the product does not exist")
         void deleteShouldThrowWhenProductNotFound() {
             given(loadProduct.loadById(404L)).willReturn(Optional.empty());
 
@@ -209,7 +209,7 @@ class ProductServiceTest {
         }
 
         @Test
-        @DisplayName("removes the existing product")
+        @DisplayName("Removes the existing product")
         void deleteShouldRemoveAnExistingProduct() {
             given(loadProduct.loadById(1L)).willReturn(Optional.of(aProduct().withId(1L).build()));
 
@@ -220,11 +220,11 @@ class ProductServiceTest {
     }
 
     @Nested
-    @DisplayName("listStockProducts (restock alert)")
+    @DisplayName("ListStockProducts (restock alert)")
     class ListStockProducts {
 
         @Test
-        @DisplayName("keeps only products whose available stock is at or below the threshold")
+        @DisplayName("Keeps only products whose available stock is at or below the threshold")
         void listStockProductsShouldOnlyKeepProductsAtOrBelowThreshold() {
             Product alerting = aProduct().withId(1L).withName("Flour").withThresholdValue("10").build();
             Product sufficient = aProduct().withId(2L).withName("Sugar").withThresholdValue("10").build();
@@ -236,7 +236,7 @@ class ProductServiceTest {
         }
 
         @Test
-        @DisplayName("considers a product exactly at the threshold as alerting")
+        @DisplayName("Considers a product exactly at the threshold as alerting")
         void listStockProductsShouldIncludeAProductExactlyAtThreshold() {
             Product atThreshold = aProduct().withId(1L).withThresholdValue("10").build();
             given(loadProduct.loadAll()).willReturn(List.of(atThreshold));
@@ -246,7 +246,7 @@ class ProductServiceTest {
         }
 
         @Test
-        @DisplayName("treats missing stock as a zero quantity")
+        @DisplayName("Treats missing stock as a zero quantity")
         void listStockProductsShouldTreatMissingStockAsZero() {
             Product withoutStock = aProduct().withId(1L).withThresholdValue("5").build();
             given(loadProduct.loadAll()).willReturn(List.of(withoutStock));
@@ -256,7 +256,7 @@ class ProductServiceTest {
         }
 
         @Test
-        @DisplayName("returns an empty list when the catalogue is empty")
+        @DisplayName("Returns an empty list when the catalogue is empty")
         void listStockProductsShouldReturnEmptyListForEmptyCatalogue() {
             given(loadProduct.loadAll()).willReturn(List.of());
 

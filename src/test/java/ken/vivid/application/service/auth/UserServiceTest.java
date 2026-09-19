@@ -58,11 +58,11 @@ class UserServiceTest {
     private ArgumentCaptor<User> userCaptor;
 
     @Nested
-    @DisplayName("update")
+    @DisplayName("Update")
     class Update {
 
         @Test
-        @DisplayName("fails when the target user does not exist")
+        @DisplayName("Fails when the target user does not exist")
         void updateShouldThrowWhenTargetUserNotFound() {
             given(loadUser.loadById(99L)).willReturn(Optional.empty());
 
@@ -73,7 +73,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("rejects a new email already used by another account")
+        @DisplayName("Rejects a new email already used by another account")
         void updateShouldThrowWhenNewEmailIsAlreadyTaken() {
             User target = aUser().withId(1L).withEmail("old@vividela.cm").build();
             given(loadUser.loadById(1L)).willReturn(Optional.of(target));
@@ -86,7 +86,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("rejects a new user name already taken")
+        @DisplayName("Rejects a new user name already taken")
         void updateShouldThrowWhenNewUserNameIsAlreadyTaken() {
             User target = aUser().withId(1L)
                     .withEmail("marc@vividela.cm").withUserName("mkemgang").build();
@@ -101,7 +101,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("skips uniqueness checks when email and user name are unchanged")
+        @DisplayName("Skips uniqueness checks when email and user name are unchanged")
         void updateShouldSkipUniquenessChecksWhenIdentifiersAreUnchanged() {
             User target = aUser().withId(1L)
                     .withEmail("marc@vividela.cm").withUserName("mkemgang").build();
@@ -115,7 +115,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("applies new profile fields and persists the user")
+        @DisplayName("Applies new profile fields and persists the user")
         void updateShouldApplyNewProfileFieldsAndSave() {
             User target = aUser().withId(1L)
                     .withEmail("marc@vividela.cm").withUserName("mkemgang")
@@ -136,7 +136,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("does not change either role or password")
+        @DisplayName("Does not change either role or password")
         void updateShouldNotChangeRoleOrPassword() {
             User target = aUser().withId(1L).withRole(Role.EMPLOYEE)
                     .withEmail("marc@vividela.cm").withUserName("mkemgang")
@@ -159,11 +159,11 @@ class UserServiceTest {
     }
 
     @Nested
-    @DisplayName("changePassword")
+    @DisplayName("Change Password")
     class ChangePassword {
 
         @Test
-        @DisplayName("fails when the user does not exist")
+        @DisplayName("Fails when the user does not exist")
         void changePasswordShouldThrowWhenUserNotFound() {
             given(loadUser.loadById(99L)).willReturn(Optional.empty());
 
@@ -175,7 +175,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("fails when the current password is wrong")
+        @DisplayName("Fails when the current password is wrong")
         void changePasswordShouldThrowWhenCurrentPasswordIsWrong() {
             User user = aUser().withId(1L).withPassword("existingHash").build();
             given(loadUser.loadById(1L)).willReturn(Optional.of(user));
@@ -189,7 +189,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("fails when the confirmation does not match the new password")
+        @DisplayName("Fails when the confirmation does not match the new password")
         void changePasswordShouldThrowWhenConfirmationDoesNotMatch() {
             User user = aUser().withId(1L).withPassword("existingHash").build();
             given(loadUser.loadById(1L)).willReturn(Optional.of(user));
@@ -203,7 +203,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("hashes the new password and persists the user")
+        @DisplayName("Hashes the new password and persists the user")
         void changePasswordShouldHashAndSaveTheNewPassword() {
             User user = aUser().withId(1L).withPassword("existingHash").build();
             given(loadUser.loadById(1L)).willReturn(Optional.of(user));
@@ -221,11 +221,11 @@ class UserServiceTest {
     }
 
     @Nested
-    @DisplayName("delete")
+    @DisplayName("Delete")
     class Delete {
 
         @Test
-        @DisplayName("fails when the user does not exist")
+        @DisplayName("Fails when the user does not exist")
         void deleteShouldThrowWhenUserNotFound() {
             given(loadUser.loadById(99L)).willReturn(Optional.empty());
 
@@ -236,7 +236,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("rejects deletion of the last administrator")
+        @DisplayName("Rejects deletion of the last administrator")
         void deleteShouldThrowWhenDeletingTheLastAdministrator() {
             User admin = aUser().withId(1L).withRole(Role.ADMIN).build();
             given(loadUser.loadById(1L)).willReturn(Optional.of(admin));
@@ -250,7 +250,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("allows removing an administrator when another one remains")
+        @DisplayName("Allows removing an administrator when another one remains")
         void deleteShouldAllowRemovingAnAdministratorWhenAnotherOneRemains() {
             User admin = aUser().withId(1L).withRole(Role.ADMIN).build();
             given(loadUser.loadById(1L)).willReturn(Optional.of(admin));
@@ -262,7 +262,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("removes a non-administrator without counting administrators")
+        @DisplayName("Removes a non-administrator without counting administrators")
         void deleteShouldRemoveANonAdministratorWithoutCountingAdmins() {
             User employee = aUser().withId(5L).withRole(Role.EMPLOYEE).build();
             given(loadUser.loadById(5L)).willReturn(Optional.of(employee));

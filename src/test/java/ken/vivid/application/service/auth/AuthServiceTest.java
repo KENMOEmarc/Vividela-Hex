@@ -62,11 +62,11 @@ class AuthServiceTest {
     private ArgumentCaptor<User> userCaptor;
 
     @Nested
-    @DisplayName("login")
+    @DisplayName("Login")
     class Login {
 
         @Test
-        @DisplayName("fails when the user is not found, without generating a token")
+        @DisplayName("Fails when the user is not found, without generating a token")
         void loginShouldThrowInvalidCredentialsWhenUserNotFound() {
             given(loadUser.loadByEmailOrUserName("unknown@vividela.cm")).willReturn(Optional.empty());
 
@@ -77,7 +77,7 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("fails when the password does not match")
+        @DisplayName("Fails when the password does not match")
         void loginShouldThrowInvalidCredentialsWhenPasswordDoesNotMatch() {
             User user = aUser().withPassword("storedHash").build();
             given(loadUser.loadByEmailOrUserName("marc@vividela.cm")).willReturn(Optional.of(user));
@@ -90,7 +90,7 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("fails when the account is disabled, even with the correct password")
+        @DisplayName("Fails when the account is disabled, even with the correct password")
         void loginShouldThrowInvalidCredentialsWhenAccountIsInactive() {
             User user = aUser().withPassword("storedHash").inactive().build();
             given(loadUser.loadByEmailOrUserName("marc@vividela.cm")).willReturn(Optional.of(user));
@@ -104,7 +104,7 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("returns a token and its validity duration when credentials are valid")
+        @DisplayName("Returns a token and its validity duration when credentials are valid")
         void loginShouldReturnAuthResultWhenCredentialsAreValid() {
             User user = aUser().withPassword("storedHash").build();
             given(loadUser.loadByEmailOrUserName("marc@vividela.cm")).willReturn(Optional.of(user));
@@ -120,26 +120,26 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("also accepts the user name as a login identifier")
+        @DisplayName("Also accepts the user name as a login identifier")
         void loginShouldAcceptUserNameAsIdentifier() {
             User user = aUser().withPassword("storedHash").build();
-            given(loadUser.loadByEmailOrUserName("mkemgang")).willReturn(Optional.of(user));
+            given(loadUser.loadByEmailOrUserName("ken47")).willReturn(Optional.of(user));
             given(passwordEncoder.matches("goodPassword", "storedHash")).willReturn(true);
             given(tokenGenerator.generateToken(user)).willReturn("jwt-token");
             given(tokenGenerator.getExpirationMillis()).willReturn(1_000L);
 
-            AuthResult result = authService.login(new LoginCommand("mkemgang", "goodPassword"));
+            AuthResult result = authService.login(new LoginCommand("ken47", "goodPassword"));
 
             assertThat(result.token()).isEqualTo("jwt-token");
         }
     }
 
     @Nested
-    @DisplayName("logout")
+    @DisplayName("Logout")
     class Logout {
 
         @Test
-        @DisplayName("revokes the provided token")
+        @DisplayName("Revokes the provided token")
         void logoutShouldRevokeTheToken() {
             authService.logout("jwt-token");
 
@@ -148,11 +148,11 @@ class AuthServiceTest {
     }
 
     @Nested
-    @DisplayName("getCurrentUser")
+    @DisplayName("GetCurrentUser")
     class GetCurrentUser {
 
         @Test
-        @DisplayName("returns the user matching the identifier")
+        @DisplayName("Returns the user matching the identifier")
         void getCurrentUserShouldReturnTheMatchingUser() {
             User user = aUser().build();
             given(loadUser.loadByEmailOrUserName("marc@vividela.cm")).willReturn(Optional.of(user));
@@ -161,7 +161,7 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("fails when the authenticated user no longer exists")
+        @DisplayName("Fails when the authenticated user no longer exists")
         void getCurrentUserShouldThrowWhenUserNoLongerExists() {
             given(loadUser.loadByEmailOrUserName("deleted@vividela.cm")).willReturn(Optional.empty());
 
@@ -171,11 +171,11 @@ class AuthServiceTest {
     }
 
     @Nested
-    @DisplayName("register / store")
+    @DisplayName("Register / Store")
     class Register {
 
         @Test
-        @DisplayName("rejects a registration with an email already in use")
+        @DisplayName("Rejects a registration with an email already in use")
         void registerShouldThrowWhenEmailAlreadyExists() {
             given(loadUser.existsByEmail("marc@vividela.cm")).willReturn(true);
 
@@ -186,7 +186,7 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("hashes the password before saving the user")
+        @DisplayName("Hashes the password before saving the user")
         void registerShouldHashThePasswordBeforeSaving() {
             given(loadUser.existsByEmail("marc@vividela.cm")).willReturn(false);
             given(passwordEncoder.hash("plainPassword")).willReturn("bcryptHash");
@@ -202,7 +202,7 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("forces the CUSTOMER role regardless of the requested role (public registration)")
+        @DisplayName("Forces the CUSTOMER role regardless of the requested role (public registration)")
         void registerShouldAlwaysForceCustomerRole() {
             given(loadUser.existsByEmail("marc@vividela.cm")).willReturn(false);
             given(passwordEncoder.hash("plainPassword")).willReturn("bcryptHash");
@@ -221,7 +221,7 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("store respects the requested role (creation by an administrator) and generates no token")
+        @DisplayName("Store respects the requested role (creation by an administrator) and generates no token")
         void storeShouldKeepTheRequestedRoleAndNotGenerateAToken() {
             given(loadUser.existsByEmail("marc@vividela.cm")).willReturn(false);
             given(passwordEncoder.hash("plainPassword")).willReturn("bcryptHash");
@@ -235,7 +235,7 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("store rejects an email already in use")
+        @DisplayName("Store rejects an email already in use")
         void storeShouldThrowWhenEmailAlreadyExists() {
             given(loadUser.existsByEmail("marc@vividela.cm")).willReturn(true);
 
@@ -246,7 +246,7 @@ class AuthServiceTest {
         }
 
         private StoreCommand registrationCommand(Role role) {
-            return new StoreCommand(1L, "Marc", "Kemgang", "mkemgang",
+            return new StoreCommand(1L, "Marc", "KENMOE", "ken47",
                     "marc@vividela.cm", "690000000", "plainPassword", role);
         }
     }
