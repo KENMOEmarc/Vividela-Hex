@@ -30,9 +30,10 @@ public class User {
     public static User createUser(Long id, Role role, String firstName, String lastName,
                                   String userName, String phone, String email, String password) {
 
-        if (firstName.isBlank() || lastName.isBlank() || userName.isBlank() ||
-                phone.isBlank() || email.isBlank() || password.isBlank() ||
-                role.describeConstable().isEmpty()) {
+        if (firstName == null || firstName.isBlank() || lastName == null || lastName.isBlank() ||
+                userName == null || userName.isBlank() || phone == null || phone.isBlank() ||
+                email == null || email.isBlank() || password == null || password.isBlank() ||
+                role == null) {
             throw new IllegalArgumentException("First name, last name, username, email, password, and role cannot be blank");
         }
 

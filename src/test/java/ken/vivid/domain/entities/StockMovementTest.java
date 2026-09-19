@@ -25,7 +25,7 @@ class StockMovementTest {
     private static final Instant NOW = Instant.now().minusSeconds(5);
 
     @Test
-    @DisplayName("creates a valid movement")
+    @DisplayName("Creates a valid movement")
     void createStockMovementShouldBuildAValidMovement() {
         StockMovement movement = StockMovement.createStockMovement(1L, 10L, 99L,
                 new BigDecimal("3.5"), MovementType.CONSUMPTION, "Workshop consumption", NOW);
@@ -40,7 +40,7 @@ class StockMovementTest {
     }
 
     @Test
-    @DisplayName("rejects a null identifier")
+    @DisplayName("Rejects a null identifier")
     void createStockMovementShouldRejectNullId() {
         assertThatThrownBy(() -> StockMovement.createStockMovement(null, 10L, 99L,
                 BigDecimal.ONE, MovementType.RESTOCK, "note", NOW))
@@ -49,7 +49,7 @@ class StockMovementTest {
     }
 
     @Test
-    @DisplayName("rejects a null batch identifier")
+    @DisplayName("Rejects a null batch identifier")
     void createStockMovementShouldRejectNullStockId() {
         assertThatThrownBy(() -> StockMovement.createStockMovement(1L, null, 99L,
                 BigDecimal.ONE, MovementType.RESTOCK, "note", NOW))
@@ -58,7 +58,7 @@ class StockMovementTest {
     }
 
     @Test
-    @DisplayName("rejects a null user identifier (no anonymous movement)")
+    @DisplayName("Rejects a null user identifier (no anonymous movement)")
     void createStockMovementShouldRejectNullUserId() {
         assertThatThrownBy(() -> StockMovement.createStockMovement(1L, 10L, null,
                 BigDecimal.ONE, MovementType.RESTOCK, "note", NOW))
@@ -67,7 +67,7 @@ class StockMovementTest {
     }
 
     @Test
-    @DisplayName("rejects a negative quantity")
+    @DisplayName("Rejects a negative quantity")
     void createStockMovementShouldRejectNegativeQuantity() {
         assertThatThrownBy(() -> StockMovement.createStockMovement(1L, 10L, 99L,
                 new BigDecimal("-1"), MovementType.RESTOCK, "note", NOW))
@@ -76,7 +76,7 @@ class StockMovementTest {
     }
 
     @Test
-    @DisplayName("rejects a null movement type")
+    @DisplayName("Rejects a null movement type")
     void createStockMovementShouldRejectNullMovementType() {
         assertThatThrownBy(() -> StockMovement.createStockMovement(1L, 10L, 99L,
                 BigDecimal.ONE, null, "note", NOW))
@@ -87,7 +87,7 @@ class StockMovementTest {
     @ParameterizedTest(name = "invalid note: \"{0}\"")
     @NullSource
     @ValueSource(strings = {"", "   "})
-    @DisplayName("rejects a null or blank note")
+    @DisplayName("Rejects a null or blank note")
     void createStockMovementShouldRejectBlankNotes(String invalidNote) {
         assertThatThrownBy(() -> StockMovement.createStockMovement(1L, 10L, 99L,
                 BigDecimal.ONE, MovementType.RESTOCK, invalidNote, NOW))
@@ -96,7 +96,7 @@ class StockMovementTest {
     }
 
     @Test
-    @DisplayName("rejects a movement date in the future")
+    @DisplayName("Rejects a movement date in the future")
     void createStockMovementShouldRejectFutureMovementDate() {
         assertThatThrownBy(() -> StockMovement.createStockMovement(1L, 10L, 99L,
                 BigDecimal.ONE, MovementType.ADJUSTMENT, "note", Instant.now().plusSeconds(3600)))
@@ -105,7 +105,7 @@ class StockMovementTest {
     }
 
     @Test
-    @DisplayName("rejects a null movement date")
+    @DisplayName("Rejects a null movement date")
     void createStockMovementShouldRejectNullMovementDate() {
         assertThatThrownBy(() -> StockMovement.createStockMovement(1L, 10L, 99L,
                 BigDecimal.ONE, MovementType.ADJUSTMENT, "note", null))

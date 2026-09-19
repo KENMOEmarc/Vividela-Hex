@@ -33,8 +33,16 @@ public class Stock {
             throw new IllegalArgumentException("Unit price cannot be negative");
         }
 
+        if (expirationDate == null) {
+            throw new IllegalArgumentException("Expiration date cannot be null");
+        }
+
         if (expirationDate.isBefore(entryDate)) {
             throw new IllegalArgumentException("Expiration date cannot be before entry date");
+        }
+
+        if(updatedAt == null) {
+            throw new IllegalArgumentException("Updated at date cannot be null");
         }
 
         if (updatedAt.isBefore(entryDate)) {

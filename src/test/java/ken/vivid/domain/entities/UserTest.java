@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class UserTest {
 
     @Test
-    @DisplayName("creates a valid user, active by default")
+    @DisplayName("Creates a valid user, active by default")
     void createUserShouldBuildAnActiveUser() {
         User user = User.createUser(1L, Role.EMPLOYEE, "Marc", "KENMOE",
                 "ken47", "690000000", "marc@vividela.cm", "hash");
@@ -31,7 +31,7 @@ class UserTest {
     }
 
     @Test
-    @DisplayName("allows a null identifier (user not yet persisted)")
+    @DisplayName("Allows a null identifier (user not yet persisted)")
     void createUserShouldAcceptNullId() {
         User user = aUser().withId(null).build();
 
@@ -40,7 +40,7 @@ class UserTest {
 
     @ParameterizedTest(name = "invalid first name: \"{0}\"")
     @ValueSource(strings = {"", "   "})
-    @DisplayName("rejects a blank first name")
+    @DisplayName("Rejects a blank first name")
     void createUserShouldRejectBlankFirstName(String invalidFirstName) {
         assertThatThrownBy(() -> User.createUser(1L, Role.CUSTOMER, invalidFirstName, "KENMOE",
                 "ken47", "690000000", "marc@vividela.cm", "hash"))
@@ -48,7 +48,7 @@ class UserTest {
     }
 
     @Test
-    @DisplayName("rejects a blank last name")
+    @DisplayName("Rejects a blank last name")
     void createUserShouldRejectBlankLastName() {
         assertThatThrownBy(() -> User.createUser(1L, Role.CUSTOMER, "Marc", "  ",
                 "ken47", "690000000", "marc@vividela.cm", "hash"))
@@ -56,7 +56,7 @@ class UserTest {
     }
 
     @Test
-    @DisplayName("rejects a blank username")
+    @DisplayName("Rejects a blank username")
     void createUserShouldRejectBlankUserName() {
         assertThatThrownBy(() -> User.createUser(1L, Role.CUSTOMER, "Marc", "KENMOE",
                 "", "690000000", "marc@vividela.cm", "hash"))
@@ -64,7 +64,7 @@ class UserTest {
     }
 
     @Test
-    @DisplayName("rejects a blank phone number")
+    @DisplayName("Rejects a blank phone number")
     void createUserShouldRejectBlankPhone() {
         assertThatThrownBy(() -> User.createUser(1L, Role.CUSTOMER, "Marc", "KENMOE",
                 "ken47", "", "marc@vividela.cm", "hash"))
@@ -72,7 +72,7 @@ class UserTest {
     }
 
     @Test
-    @DisplayName("rejects a blank email")
+    @DisplayName("Rejects a blank email")
     void createUserShouldRejectBlankEmail() {
         assertThatThrownBy(() -> User.createUser(1L, Role.CUSTOMER, "Marc", "KENMOE",
                 "ken47", "690000000", "   ", "hash"))
@@ -80,33 +80,27 @@ class UserTest {
     }
 
     @Test
-    @DisplayName("rejects a blank password")
+    @DisplayName("Rejects a blank password")
     void createUserShouldRejectBlankPassword() {
         assertThatThrownBy(() -> User.createUser(1L, Role.CUSTOMER, "Marc", "KENMOE",
                 "ken47", "690000000", "marc@vividela.cm", ""))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    /*
-     * Characterization test: createUser directly calls isBlank() on
-     * the strings and describeConstable() on the role, without null checking.
-     * A null value therefore produces an NPE instead of the expected
-     * IllegalArgumentException. To be harmonized on the domain side.
-     */
     @Test
-    @DisplayName("[known anomaly] a null field throws a NullPointerException instead of an IllegalArgumentException")
-    void createUserShouldCurrentlyThrowNpeOnNullField() {
+    @DisplayName(" A null field throws a IllegalArgumentException instead of an NullPointerException")
+    void createUserShouldCurrentlyThrowIllegalArgumentExceptionOnNullFieldISnteadOfNullPointerException() {
         assertThatThrownBy(() -> User.createUser(1L, Role.CUSTOMER, null, "KENMOE",
                 "ken47", "690000000", "marc@vividela.cm", "hash"))
-                .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(IllegalArgumentException.class);
 
         assertThatThrownBy(() -> User.createUser(1L, null, "Marc", "KENMOE",
                 "ken47", "690000000", "marc@vividela.cm", "hash"))
-                .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("loyalty points are not initialized at creation")
+    @DisplayName("Loyalty points are not initialized at creation")
     void loyaltyPointsShouldBeNullUntilExplicitlySet() {
         User user = aUser().build();
 

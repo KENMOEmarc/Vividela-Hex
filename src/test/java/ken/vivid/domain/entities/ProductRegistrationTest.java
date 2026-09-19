@@ -22,7 +22,7 @@ class ProductRegistrationTest {
     private static final Instant NOW = Instant.now().minusSeconds(5);
 
     @Test
-    @DisplayName("creates a valid registration")
+    @DisplayName("Creates a valid registration")
     void createProductRegistrationShouldBuildAValidRegistration() {
         ProductRegistration registration = ProductRegistration.createProductRegistration(
                 1L, 42L, new BigDecimal("20"), RegistrationType.IN, "Supplier delivery", NOW);
@@ -36,7 +36,7 @@ class ProductRegistrationTest {
     }
 
     @Test
-    @DisplayName("rejects a null identifier")
+    @DisplayName("Rejects a null identifier")
     void createProductRegistrationShouldRejectNullId() {
         assertThatThrownBy(() -> ProductRegistration.createProductRegistration(null, 42L,
                 BigDecimal.ONE, RegistrationType.IN, "note", NOW))
@@ -45,7 +45,7 @@ class ProductRegistrationTest {
     }
 
     @Test
-    @DisplayName("rejects a null product identifier")
+    @DisplayName("Rejects a null product identifier")
     void createProductRegistrationShouldRejectNullProductId() {
         assertThatThrownBy(() -> ProductRegistration.createProductRegistration(1L, null,
                 BigDecimal.ONE, RegistrationType.IN, "note", NOW))
@@ -54,7 +54,7 @@ class ProductRegistrationTest {
     }
 
     @Test
-    @DisplayName("rejects a null or negative quantity as reference value")
+    @DisplayName("Rejects a null or negative quantity as reference value")
     void createProductRegistrationShouldRejectNullOrNegativeQuantity() {
         assertThatThrownBy(() -> ProductRegistration.createProductRegistration(1L, 42L,
                 null, RegistrationType.IN, "note", NOW))
@@ -68,7 +68,7 @@ class ProductRegistrationTest {
     }
 
     @Test
-    @DisplayName("rejects a null registration type")
+    @DisplayName("Rejects a null registration type")
     void createProductRegistrationShouldRejectNullRegistrationType() {
         assertThatThrownBy(() -> ProductRegistration.createProductRegistration(1L, 42L,
                 BigDecimal.ONE, null, "note", NOW))
@@ -79,7 +79,7 @@ class ProductRegistrationTest {
     @ParameterizedTest(name = "invalid note: \"{0}\"")
     @NullSource
     @ValueSource(strings = {"", "   "})
-    @DisplayName("rejects a null or blank note")
+    @DisplayName("Rejects a null or blank note")
     void createProductRegistrationShouldRejectBlankNotes(String invalidNote) {
         assertThatThrownBy(() -> ProductRegistration.createProductRegistration(1L, 42L,
                 BigDecimal.ONE, RegistrationType.ADJUSTMENT, invalidNote, NOW))
@@ -88,7 +88,7 @@ class ProductRegistrationTest {
     }
 
     @Test
-    @DisplayName("rejects a null or future registration date")
+    @DisplayName("Rejects a null or future registration date")
     void createProductRegistrationShouldRejectNullOrFutureRegisteredAt() {
         assertThatThrownBy(() -> ProductRegistration.createProductRegistration(1L, 42L,
                 BigDecimal.ONE, RegistrationType.IN, "note", null))

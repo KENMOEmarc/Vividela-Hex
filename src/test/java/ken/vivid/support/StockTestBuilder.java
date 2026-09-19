@@ -76,18 +76,13 @@ public final class StockTestBuilder {
         return this;
     }
 
-    /** Expiration date expressed as a number of days from now. */
-    public StockTestBuilder expiringInNDays(long days) {
-        return withExpirationDate(Instant.now().plus(days, ChronoUnit.DAYS));
-    }
-
     /** Batch without expiration date (field forced to null, see class javadoc). */
     public StockTestBuilder withoutExpirationDate() {
         this.withoutExpirationDate = true;
         return this;
     }
     public StockTestBuilder expiringInDays(int i) {
-        expirationDate.plus(i, ChronoUnit.DAYS);
+        expirationDate = expirationDate.plus(i, ChronoUnit.DAYS);
         return this;
     }
 

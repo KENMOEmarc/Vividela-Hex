@@ -112,8 +112,6 @@ class JwtTokenAdapterTest {
         assertThat(adapter.getExpirationMillis()).isEqualTo(ONE_HOUR_IN_MILLIS);
     }
 
-    //TODO ReflectionTestUtils
-
     private static JwtTokenAdapter adapterWith(String secret, long expirationMillis) {
         JwtTokenAdapter adapter = new JwtTokenAdapter();
         ReflectionTestUtils.setField(adapter, "secret", secret);

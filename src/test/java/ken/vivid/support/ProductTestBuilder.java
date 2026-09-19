@@ -53,17 +53,18 @@ public final class ProductTestBuilder {
         return this;
     }
 
-    public ProductTestBuilder withCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
+    public ProductTestBuilder withCreatedAt(Instant creation) {
+        this.createdAt = creation;
         return this;
     }
 
-    public ProductTestBuilder withUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
+    public ProductTestBuilder withUpdatedAt(Instant update) {
+        this.updatedAt = update;
         return this;
     }
 
     public Product build() {
         return Product.createProduct(id, name, thresholdValue, measurementUnit, createdAt, updatedAt);
     }
+
 }
