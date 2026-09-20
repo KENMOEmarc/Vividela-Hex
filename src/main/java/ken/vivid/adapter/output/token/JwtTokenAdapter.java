@@ -6,6 +6,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import ken.vivid.application.port.output.auth.TokenGenerator;
 import ken.vivid.domain.entities.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class JwtTokenAdapter implements TokenGenerator {
 
@@ -35,18 +37,21 @@ public class JwtTokenAdapter implements TokenGenerator {
                     "The jwt.secret must contain at least " + MIN_SECRET_LENGTH_BYTES + " octets (HS256)");
         }
         this.signingKey = Keys.hmacShaKeyFor(secretBytes);
+        log.info("JWT signing key initialized successfully");
     }
 
     @Override
     public String generateToken(User user) {
         Date now = new Date();
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .subject(user.getUserName())
                 .claim("role", user.getRole().name())
                 .issuedAt(now)
                 .expiration(new Date(now.getTime() + expirationMillis))
                 .signWith(signingKey)
                 .compact();
+        log.debug("Generated JWT for user={}", user.getUserName());
+        return token;
     }
 
     @Override
@@ -54,9 +59,11 @@ public class JwtTokenAdapter implements TokenGenerator {
         try {
             Claims claims = Jwts.parser().verifyWith(signingKey).build()
                     .parseSignedClaims(token).getPayload();
+            log.debug("Validated JWT for subject={}", claims.getSubject());
             return Optional.of(claims.getSubject());
         } catch (Exception e) {
-            return Optional.empty(); // token invalide, expiré, signature incorrecte...
+            log.warn("JWT validation failed: {}", e.getMessage());
+            return Optional.empty();
         }
     }
 

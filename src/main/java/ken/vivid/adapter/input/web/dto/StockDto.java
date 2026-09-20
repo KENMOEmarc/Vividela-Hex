@@ -29,4 +29,5 @@ public record StockDto(
                 .updatedAt(stock.getUpdatedAt())
                 .build();
     }
+
 }

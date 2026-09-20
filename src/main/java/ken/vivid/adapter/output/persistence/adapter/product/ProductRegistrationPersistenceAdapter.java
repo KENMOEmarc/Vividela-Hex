@@ -5,8 +5,10 @@ import ken.vivid.adapter.output.persistence.jpaRepositories.product.ProductRegis
 import ken.vivid.application.port.output.product.SaveProductRegistration;
 import ken.vivid.domain.entities.ProductRegistration;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ProductRegistrationPersistenceAdapter implements SaveProductRegistration {
@@ -15,6 +17,8 @@ public class ProductRegistrationPersistenceAdapter implements SaveProductRegistr
 
     @Override
     public ProductRegistration save(ProductRegistration registration) {
+        log.info("Persisting product registration for productId={} quantity={} type={}",
+                registration.getProductId(), registration.getQuantity(), registration.getRegistrationType());
         ProductRegistrationJpaEntity saved = jpaRepository.save(toEntity(registration));
         return toDomain(saved);
     }

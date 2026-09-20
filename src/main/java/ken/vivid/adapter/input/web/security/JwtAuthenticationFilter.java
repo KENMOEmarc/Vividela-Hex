@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import ken.vivid.application.port.output.auth.TokenBlacklist;
 import ken.vivid.application.port.output.auth.TokenGenerator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -30,9 +32,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         extractToken(request)
-                .filter(token -> !tokenBlacklist.isRevoked(token))
-                .flatMap(tokenGenerator::validateAndExtractEmail)
-                .ifPresent(email -> authenticate(email, request));
+                .ifPresentOrElse(token -> {
+                    if (tokenBlacklist.isRevoked(token)) {
+                        log.warn("Rejected revoked JWT for request {}", request.getRequestURI());
+                        return;
+                    }
+                    tokenGenerator.validateAndExtractEmail(token)
+                            .ifPresentOrElse(
+                                    email -> authenticate(email, request),
+                                    () -> log.warn("Invalid JWT supplied for request {}", request.getRequestURI())
+                            );
+                }, () -> log.debug("No Authorization header provided for request {}", request.getRequestURI()));
 
         chain.doFilter(request, response);
     }
@@ -43,6 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 userDetails, null, userDetails.getAuthorities());
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authToken);
+        log.debug("JWT authenticated for principal={} on {}", email, request.getRequestURI());
     }
 
     private Optional<String> extractToken(HttpServletRequest request) {

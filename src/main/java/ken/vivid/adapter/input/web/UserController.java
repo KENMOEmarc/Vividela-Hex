@@ -13,12 +13,14 @@ import ken.vivid.application.port.input.auth.updateUser.UpdateCommand;
 import ken.vivid.application.port.input.auth.updateUser.UpdateUserUseCase;
 import ken.vivid.domain.entities.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -31,6 +33,7 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserDto>> getCurrentUser(Authentication authentication) {
+        log.debug("Fetching authenticated user profile for principal={}", authentication.getName());
         var user = getCurrentUserUseCase.getCurrentUser(authentication.getName());
         return ResponseEntity.ok(ApiResponse.success("User profile", UserDto.from(user)));
     }
@@ -40,6 +43,7 @@ public class UserController {
                                                        @Valid @RequestBody UpdateUserRequest request,
                                                        Authentication authentication) {
         User actingUser = getCurrentUserUseCase.getCurrentUser(authentication.getName());
+        log.info("Profile update requested for userId={} by principal={}", id, actingUser.getUserName());
         User updated = updateUserUseCase.update(new UpdateCommand(
                 id,
                 actingUser.getRole(),
@@ -49,6 +53,7 @@ public class UserController {
                 request.getEmail(),
                 request.getPhone()
         ));
+        log.info("Profile updated successfully for userId={}", updated.getId());
         return ResponseEntity.ok(ApiResponse.success("Profile updated", UserDto.from(updated)));
     }
 
@@ -58,6 +63,7 @@ public class UserController {
                                                             @Valid @RequestBody ChangePasswordRequest request,
                                                             Authentication authentication) {
         User actingUser = getCurrentUserUseCase.getCurrentUser(authentication.getName());
+        log.info("Password update requested for userId={} by principal={}", id, actingUser.getUserName());
         if (!actingUser.getId().equals(id)) {
             throw new AccessDeniedException("You can only modify your own password");
         }
@@ -67,6 +73,7 @@ public class UserController {
                 request.getNewPassword(),
                 request.getConfirmPassword()
         ));
+        log.info("Password updated successfully for userId={}", id);
         return ResponseEntity.ok(ApiResponse.success("Password updated"));
     }
 
@@ -74,7 +81,9 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id, Authentication authentication) {
         User actingUser = getCurrentUserUseCase.getCurrentUser(authentication.getName());
+        log.info("Delete user request received for userId={} by admin={}", id, actingUser.getUserName());
         deleteUserUseCase.delete(id);
+        log.info("User {} deleted successfully by admin={}", id, actingUser.getUserName());
         return ResponseEntity.ok(ApiResponse.success("Utilisateur supprimé"));
     }
 

@@ -5,8 +5,10 @@ import ken.vivid.adapter.output.persistence.jpaRepositories.product.StockMovemen
 import ken.vivid.application.port.output.product.stock.movement.SaveStockMovement;
 import ken.vivid.domain.entities.StockMovement;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class StockMovementPersistenceAdapter implements SaveStockMovement {
@@ -15,6 +17,8 @@ public class StockMovementPersistenceAdapter implements SaveStockMovement {
 
     @Override
     public StockMovement save(StockMovement movement) {
+        log.info("Persisting stock movement for stockId={} type={} quantity={}",
+                movement.getStockId(), movement.getMovementType(), movement.getQuantity());
         StockMovementJpaEntity saved = jpaRepository.save(toEntity(movement));
         return toDomain(saved);
     }

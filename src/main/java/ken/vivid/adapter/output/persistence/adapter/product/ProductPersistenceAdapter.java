@@ -7,11 +7,13 @@ import ken.vivid.application.port.output.product.LoadProduct;
 import ken.vivid.application.port.output.product.SaveProduct;
 import ken.vivid.domain.entities.Product;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ProductPersistenceAdapter implements LoadProduct, SaveProduct, DeleteProduct {
@@ -20,33 +22,40 @@ public class ProductPersistenceAdapter implements LoadProduct, SaveProduct, Dele
 
     @Override
     public Optional<Product> loadById(Long id) {
+        log.debug("Loading product by id={}", id);
         return jpaRepository.findById(id).map(this::toDomain);
     }
 
     @Override
     public Optional<Product> loadByName(String name) {
+        log.debug("Loading product by name={}", name);
         return jpaRepository.findByName(name).map(this::toDomain);
     }
 
     @Override
     public List<Product> loadAll() {
+        log.debug("Loading all products");
         return jpaRepository.findAll().stream().map(this::toDomain).toList();
     }
 
     @Override
     public boolean existsByName(String name) {
-        return jpaRepository.existsByName(name);
+        boolean exists = jpaRepository.existsByName(name);
+        log.debug("Product name exists check for {} => {}", name, exists);
+        return exists;
     }
 
     @Override
     public Product save(Product product) {
+        log.info("Saving product {}", product.getName());
         ProductJpaEntity saved = jpaRepository.save(toEntity(product));
         return toDomain(saved);
     }
 
     @Override
     public void delete(Long id) {
-       jpaRepository.deleteById(id);
+        log.info("Deleting product with id={}", id);
+        jpaRepository.deleteById(id);
     }
 
     private Product toDomain(ProductJpaEntity entity) {

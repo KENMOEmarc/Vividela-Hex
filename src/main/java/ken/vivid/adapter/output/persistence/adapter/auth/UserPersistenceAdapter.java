@@ -8,10 +8,12 @@ import ken.vivid.application.port.output.auth.SaveUser;
 import ken.vivid.domain.entities.User;
 import ken.vivid.domain.dto.Role;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class UserPersistenceAdapter implements LoadUser, SaveUser, DeleteUser {
@@ -20,42 +22,53 @@ public class UserPersistenceAdapter implements LoadUser, SaveUser, DeleteUser {
 
     @Override
     public Optional<User> loadByEmailOrUserName(String identifier) {
+        log.debug("Loading user by identifier={}", identifier);
         return jpaRepository.findByEmailOrUserName(identifier).map(this::toDomain);
     }
 
     @Override
     public Optional<User> loadById(Long id) {
+        log.debug("Loading user by id={}", id);
         return jpaRepository.findById(id).map(this::toDomain);
     }
 
     @Override
     public Optional<User> loadByUserName(String userName) {
+        log.debug("Loading user by username={}", userName);
         return jpaRepository.findByUserName(userName).map(this::toDomain);
     }
 
     @Override
     public boolean existsByEmail(String email) {
-        return jpaRepository.existsByEmail(email);
+        boolean exists = jpaRepository.existsByEmail(email);
+        log.debug("Email existence check for {} => {}", email, exists);
+        return exists;
     }
 
     @Override
     public boolean existsByUserName(String userName) {
-        return jpaRepository.existsByUserName(userName);
+        boolean exists = jpaRepository.existsByUserName(userName);
+        log.debug("Username existence check for {} => {}", userName, exists);
+        return exists;
     }
 
     @Override
     public long countByRole(Role role) {
-        return jpaRepository.countByRole(role);
+        long count = jpaRepository.countByRole(role);
+        log.debug("Counted {} user(s) for role={}", count, role);
+        return count;
     }
 
     @Override
     public User save(User user) {
+        log.info("Persisting user {} ({})", user.getUserName(), user.getEmail());
         UserJpaEntity saved = jpaRepository.save(toEntity(user));
         return toDomain(saved);
     }
 
     @Override
     public void delete(Long id) {
+        log.info("Deleting user with id={}", id);
         jpaRepository.deleteById(id);
     }
 
