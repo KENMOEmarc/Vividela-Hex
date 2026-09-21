@@ -3,7 +3,7 @@ package ken.vivid.adapter.output.persistence.adapter.product;
 import ken.vivid.adapter.output.persistence.jpaEntities.product.StockMovementJpaEntity;
 import ken.vivid.adapter.output.persistence.jpaRepositories.product.StockMovementJpaRepository;
 import ken.vivid.application.port.output.product.stock.movement.SaveStockMovement;
-import ken.vivid.domain.entities.StockMovement;
+import ken.vivid.domain.entities.product.StockMovement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

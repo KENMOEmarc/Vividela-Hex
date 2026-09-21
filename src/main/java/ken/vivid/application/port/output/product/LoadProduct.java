@@ -1,6 +1,6 @@
 package ken.vivid.application.port.output.product;
 
-import ken.vivid.domain.entities.Product;
+import ken.vivid.domain.entities.product.Product;
 
 import java.util.List;
 import java.util.Optional;

@@ -3,7 +3,7 @@ package ken.vivid.adapter.output.persistence.adapter.product;
 import ken.vivid.adapter.output.persistence.jpaEntities.product.ProductRegistrationJpaEntity;
 import ken.vivid.adapter.output.persistence.jpaRepositories.product.ProductRegistrationJpaRepository;
 import ken.vivid.application.port.output.product.SaveProductRegistration;
-import ken.vivid.domain.entities.ProductRegistration;
+import ken.vivid.domain.entities.product.ProductRegistration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

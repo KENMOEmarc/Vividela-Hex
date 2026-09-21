@@ -4,7 +4,7 @@ import ken.vivid.adapter.output.persistence.jpaEntities.product.StockJpaEntity;
 import ken.vivid.adapter.output.persistence.jpaRepositories.product.StockJpaRepository;
 import ken.vivid.application.port.output.product.stock.LoadStock;
 import ken.vivid.application.port.output.product.stock.SaveStock;
-import ken.vivid.domain.entities.Stock;
+import ken.vivid.domain.entities.product.Stock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,7 @@
 package ken.vivid.adapter.input.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import ken.vivid.domain.entities.Product;
+import ken.vivid.domain.entities.product.Product;
 import ken.vivid.domain.dto.MeasurementUnit;
 import lombok.Builder;
 

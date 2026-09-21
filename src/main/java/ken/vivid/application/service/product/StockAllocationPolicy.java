@@ -1,7 +1,7 @@
 package ken.vivid.application.service.product;
 
 import ken.vivid.adapter.exception.product.InsufficientStockException;
-import ken.vivid.domain.entities.Stock;
+import ken.vivid.domain.entities.product.Stock;
 import ken.vivid.adapter.exception.InvalidRequestException;
 
 import java.math.BigDecimal;

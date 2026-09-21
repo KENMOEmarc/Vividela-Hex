@@ -1,6 +1,7 @@
 package ken.vivid.domain.entities;
 
 import ken.vivid.domain.dto.MovementType;
+import ken.vivid.domain.entities.product.StockMovement;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

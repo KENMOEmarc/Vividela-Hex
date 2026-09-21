@@ -1,4 +1,4 @@
-package ken.vivid.domain.entities;
+package ken.vivid.domain.entities.product;
 
 import ken.vivid.domain.dto.RegistrationType;
 

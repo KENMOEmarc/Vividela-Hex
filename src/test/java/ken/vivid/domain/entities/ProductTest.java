@@ -1,6 +1,7 @@
 package ken.vivid.domain.entities;
 
 import ken.vivid.domain.dto.MeasurementUnit;
+import ken.vivid.domain.entities.product.Product;
 import ken.vivid.support.ProductTestBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

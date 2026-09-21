@@ -10,7 +10,7 @@ import ken.vivid.application.port.output.product.DeleteProduct;
 import ken.vivid.application.port.output.product.LoadProduct;
 import ken.vivid.application.port.output.product.SaveProduct;
 import ken.vivid.application.port.output.product.stock.LoadStock;
-import ken.vivid.domain.entities.Product;
+import ken.vivid.domain.entities.product.Product;
 import ken.vivid.adapter.exception.DuplicateResourceException;
 import ken.vivid.adapter.exception.ResourceNotFoundException;
 

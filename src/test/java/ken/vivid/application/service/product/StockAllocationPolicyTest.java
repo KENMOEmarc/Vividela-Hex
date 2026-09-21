@@ -2,7 +2,7 @@ package ken.vivid.application.service.product;
 
 import ken.vivid.adapter.exception.InvalidRequestException;
 import ken.vivid.adapter.exception.product.InsufficientStockException;
-import ken.vivid.domain.entities.Stock;
+import ken.vivid.domain.entities.product.Stock;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

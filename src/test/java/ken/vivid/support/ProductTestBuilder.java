@@ -1,7 +1,7 @@
 package ken.vivid.support;
 
 import ken.vivid.domain.dto.MeasurementUnit;
-import ken.vivid.domain.entities.Product;
+import ken.vivid.domain.entities.product.Product;
 
 import java.math.BigDecimal;
 import java.time.Instant;

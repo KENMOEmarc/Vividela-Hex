@@ -1,6 +1,7 @@
 package ken.vivid.domain.entities;
 
 import ken.vivid.domain.dto.RegistrationType;
+import ken.vivid.domain.entities.product.ProductRegistration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

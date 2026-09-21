@@ -1,5 +1,6 @@
 package ken.vivid.domain.entities;
 
+import ken.vivid.domain.entities.product.Stock;
 import ken.vivid.support.StockTestBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

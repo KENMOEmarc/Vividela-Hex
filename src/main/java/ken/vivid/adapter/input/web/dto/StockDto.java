@@ -1,7 +1,7 @@
 package ken.vivid.adapter.input.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import ken.vivid.domain.entities.Stock;
+import ken.vivid.domain.entities.product.Stock;
 import lombok.Builder;
 
 import java.math.BigDecimal;

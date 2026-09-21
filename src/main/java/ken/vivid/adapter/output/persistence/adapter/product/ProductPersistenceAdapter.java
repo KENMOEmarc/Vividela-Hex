@@ -5,7 +5,7 @@ import ken.vivid.adapter.output.persistence.jpaRepositories.product.ProductJpaRe
 import ken.vivid.application.port.output.product.DeleteProduct;
 import ken.vivid.application.port.output.product.LoadProduct;
 import ken.vivid.application.port.output.product.SaveProduct;
-import ken.vivid.domain.entities.Product;
+import ken.vivid.domain.entities.product.Product;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

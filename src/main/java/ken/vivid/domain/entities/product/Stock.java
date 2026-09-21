@@ -1,4 +1,4 @@
-package ken.vivid.domain.entities;
+package ken.vivid.domain.entities.product;
 
 import java.math.BigDecimal;
 import java.time.Instant;

@@ -1,6 +1,6 @@
 package ken.vivid.application.port.output.product.stock;
 
-import ken.vivid.domain.entities.Stock;
+import ken.vivid.domain.entities.product.Stock;
 
 import java.math.BigDecimal;
 import java.util.List;

@@ -5,11 +5,13 @@ import ken.vivid.application.port.output.product.*;
 import ken.vivid.application.port.output.product.stock.LoadStock;
 import ken.vivid.application.port.output.product.stock.SaveStock;
 import ken.vivid.application.port.output.product.stock.movement.SaveStockMovement;
+import ken.vivid.application.port.output.order.*;
 import ken.vivid.application.service.auth.AuthService;
 import ken.vivid.application.service.product.ProductService;
 import ken.vivid.application.service.product.StockAllocationPolicy;
 import ken.vivid.application.service.product.StockService;
 import ken.vivid.application.service.auth.UserService;
+import ken.vivid.application.service.order.OrderService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -56,5 +58,10 @@ public class AppConfig {
                                      StockAllocationPolicy stockAllocationPolicy) {
         return new StockService(loadProduct, loadStock, saveStock, saveProductRegistration,
                 saveStockMovement, stockAllocationPolicy);
+    }
+
+    @Bean
+    public OrderService orderService(LoadOrder loadOrder, SaveOrder saveOrder, DeleteOrder deleteOrder) {
+        return new OrderService(loadOrder, saveOrder, deleteOrder);
     }
 }
