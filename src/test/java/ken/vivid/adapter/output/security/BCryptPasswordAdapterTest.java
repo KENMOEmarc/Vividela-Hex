@@ -1,5 +1,6 @@
 package ken.vivid.adapter.output.security;
 
+import ken.vivid.adapter.input.web.output.security.BCryptPasswordAdapter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
