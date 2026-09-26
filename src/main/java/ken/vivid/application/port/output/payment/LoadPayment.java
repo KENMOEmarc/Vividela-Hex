@@ -1,5 +1,6 @@
 package ken.vivid.application.port.output.payment;
 
+import ken.vivid.adapter.output.persistence.jpaEntities.order.PaymentJpaEntity;
 import ken.vivid.domain.entities.payment.Payment;
 import ken.vivid.domain.entities.payment.PaymentStatus;
 
@@ -13,7 +14,7 @@ public interface LoadPayment {
 
     List<Payment> loadByOrderId(Long orderId);
 
-    Optional<Payment> loadByTransactionReference(String transactionReference);
+    Optional<PaymentJpaEntity> loadByTransactionReference(String transactionReference);
 
     /**
      * Sum of the amounts of payments of the given order whose status is in

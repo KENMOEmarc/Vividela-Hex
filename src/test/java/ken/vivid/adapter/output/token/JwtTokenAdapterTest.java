@@ -1,6 +1,5 @@
 package ken.vivid.adapter.output.token;
 
-import ken.vivid.adapter.input.web.output.token.JwtTokenAdapter;
 import ken.vivid.domain.entities.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
