@@ -1,7 +1,7 @@
-package ken.vivid.adapter.output.persistence.adapter.order;
+package ken.vivid.adapter.input.web.output.persistence.adapter.order;
 
-import ken.vivid.adapter.output.persistence.jpaEntities.order.OrderJpaEntity;
-import ken.vivid.adapter.output.persistence.jpaRepositories.order.OrderJpaRepository;
+import ken.vivid.adapter.input.web.output.persistence.jpaEntities.order.OrderJpaEntity;
+import ken.vivid.adapter.input.web.output.persistence.jpaRepositories.order.OrderJpaRepository;
 import ken.vivid.application.port.output.order.*;
 import ken.vivid.domain.entities.order.Order;
 import lombok.RequiredArgsConstructor;
@@ -16,16 +16,17 @@ public class OrderPersistenceAdapter implements LoadOrder, SaveOrder, DeleteOrde
     private final OrderJpaRepository repository;
 
     @Override
-    public Optional<Order> loadById(Long id) { return repository.findById(id).map(this::toDomain); }
+    public Optional<Order> loadOrderById(Long id) { return repository.findById(id).map(OrderPersistenceAdapter::toDomain); }
 
     @Override
-    public List<Order> loadAll() {
-        return repository.findAll().stream().map(this::toDomain).toList();
+    public List<Order> loadOrderAll() {
+        return repository.findAll().stream().map(OrderPersistenceAdapter::toDomain).toList();
     }
 
     @Override
-    public List<Order> loadByClientId(Long clientId) {
-        return repository.findByClientIdOrderByOrderDateDesc(clientId).stream().map(this::toDomain).toList();
+    public List<Order> loadOrderByClientId(Long clientId) {
+        return repository.findByClientIdOrderByOrderDateDesc(clientId)
+                .stream().map(OrderPersistenceAdapter::toDomain).toList();
     }
 
     @Override
@@ -34,14 +35,14 @@ public class OrderPersistenceAdapter implements LoadOrder, SaveOrder, DeleteOrde
     @Override
     public void delete(Long id) { repository.deleteById(id); }
 
-    private Order toDomain(OrderJpaEntity entity) {
+    public static Order toDomain(OrderJpaEntity entity) {
         return Order.create(entity.getId(), entity.getClientId(), entity.getOrderDate(),
                 entity.getExpectedDeliveryDate(), entity.getDeliveredAt(), entity.getStatus(),
                 entity.getPaymentStatus(), entity.getNotes(), entity.getTotalAmount(),
                 entity.getDiscountAmount(), entity.getCreatedAt(), entity.getUpdatedAt());
     }
 
-    private OrderJpaEntity toEntity(Order order) {
+    public static OrderJpaEntity toEntity(Order order) {
         return OrderJpaEntity.builder().id(order.getId()).clientId(order.getClientId())
                 .orderDate(order.getOrderDate()).expectedDeliveryDate(order.getExpectedDeliveryDate())
                 .deliveredAt(order.getDeliveredAt()).status(order.getStatus())

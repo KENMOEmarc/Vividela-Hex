@@ -1,5 +1,7 @@
 package ken.vivid.domain.entities.order;
 
+import ken.vivid.domain.entities.payment.PaymentStatus;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -87,5 +89,17 @@ public class Order {
             deliveredAt = LocalDate.now();
         }
         this.updatedAt = updatedAt;
+    }
+
+    public void updatePaymentStatus(PaymentStatus newStatus, Instant now) {
+        if (newStatus == null) {
+            throw new IllegalArgumentException("Payment status cannot be null");
+        }
+        this.paymentStatus = newStatus;
+        this.updatedAt = now;
+    }
+
+    public BigDecimal getNetAmountDue() {
+        return getTotalAmount().subtract(getDiscountAmount());
     }
 }

@@ -1,4 +1,4 @@
-package ken.vivid.application.port.input.order;
+package ken.vivid.application.port.input.order.updateOrder;
 
 import ken.vivid.domain.entities.order.Order;
 

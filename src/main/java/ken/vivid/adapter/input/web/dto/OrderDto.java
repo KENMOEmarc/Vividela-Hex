@@ -2,6 +2,7 @@ package ken.vivid.adapter.input.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import ken.vivid.domain.entities.order.*;
+import ken.vivid.domain.entities.payment.PaymentStatus;
 
 import java.math.BigDecimal;
 import java.time.Instant;

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LoadOrder {
-    Optional<Order> loadById(Long id);
-    List<Order> loadAll();
-    List<Order> loadByClientId(Long clientId);
+    Optional<Order> loadOrderById(Long id);
+    List<Order> loadOrderAll();
+    List<Order> loadOrderByClientId(Long clientId);
 }

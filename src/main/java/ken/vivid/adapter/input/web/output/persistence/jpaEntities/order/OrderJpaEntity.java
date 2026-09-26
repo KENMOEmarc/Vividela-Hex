@@ -1,8 +1,8 @@
-package ken.vivid.adapter.output.persistence.jpaEntities.order;
+package ken.vivid.adapter.input.web.output.persistence.jpaEntities.order;
 
 import jakarta.persistence.*;
 import ken.vivid.domain.entities.order.OrderStatus;
-import ken.vivid.domain.entities.order.PaymentStatus;
+import ken.vivid.domain.entities.payment.PaymentStatus;
 import lombok.*;
 
 import java.math.BigDecimal;
