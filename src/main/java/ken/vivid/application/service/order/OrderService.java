@@ -3,11 +3,16 @@ package ken.vivid.application.service.order;
 import ken.vivid.adapter.exception.InvalidStateTransitionException;
 import ken.vivid.adapter.exception.ResourceNotFoundException;
 import ken.vivid.application.port.input.order.*;
+import ken.vivid.application.port.input.order.createOrder.CreateOrderCommand;
+import ken.vivid.application.port.input.order.createOrder.CreateOrderUseCase;
+import ken.vivid.application.port.input.order.updateOrder.UpdateOrderCommand;
+import ken.vivid.application.port.input.order.updateOrder.UpdateOrderUseCase;
 import ken.vivid.application.port.output.order.DeleteOrder;
 import ken.vivid.application.port.output.order.LoadOrder;
 import ken.vivid.application.port.output.order.SaveOrder;
 import ken.vivid.domain.entities.order.Order;
 import ken.vivid.domain.entities.order.OrderStatus;
+import ken.vivid.domain.entities.payment.PaymentStatus;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -31,21 +36,21 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase,
         Instant now = Instant.now();
         return saveOrder.save(Order.create(null, command.clientId(), LocalDate.now(),
                 command.expectedDeliveryDate(), null, OrderStatus.RECEIVED,
-                ken.vivid.domain.entities.order.PaymentStatus.PENDING, command.notes(),
+                PaymentStatus.PENDING, command.notes(),
                 amount(command.totalAmount()), amount(command.discountAmount()), now, now));
     }
 
     @Override
     public Order getById(Long id) {
-        return loadOrder.loadById(id)
+        return loadOrder.loadOrderById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found : " + id));
     }
 
     @Override
-    public List<Order> getAll() { return loadOrder.loadAll(); }
+    public List<Order> getAll() { return loadOrder.loadOrderAll(); }
 
     @Override
-    public List<Order> getByClientId(Long clientId) { return loadOrder.loadByClientId(clientId); }
+    public List<Order> getByClientId(Long clientId) { return loadOrder.loadOrderByClientId(clientId); }
 
     @Override
     public Order update(UpdateOrderCommand command) {
@@ -58,7 +63,6 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase,
 
     @Override
     public void delete(Long id) {
-        getById(id);
         deleteOrder.delete(id);
     }
 
