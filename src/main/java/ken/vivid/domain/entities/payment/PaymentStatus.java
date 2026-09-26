@@ -1,4 +1,4 @@
-package ken.vivid.domain.entities.order;
+package ken.vivid.domain.entities.payment;
 
 public enum PaymentStatus {
     PENDING,
