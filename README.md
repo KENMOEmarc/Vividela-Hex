@@ -34,9 +34,9 @@
 
 ## 📖 Overview
 
-**Vividela Backend ("Simple Hexagonal" edition)** is the application foundation for the management system of a **laundry business based in Cameroon**. This edition deliberately focuses on a **bounded context**: the management of **users**, **authentication**, and **product stock** (laundry, detergents, consumables) to serve as a pedagogical demonstrator and a robust foundation for a strict **hexagonal architecture (Ports & Adapters)**, fully tested.
+**Vividela Backend ("Simple Hexagonal" edition)** is the application foundation for the management system of a **laundry business based in Cameroon**. It provides **authentication and user management, product and stock management, orders, and payments**, following a strict **hexagonal architecture (Ports & Adapters)**.
 
-> 💡 The complete database schema (`laundry.sql`) already anticipates future modules — orders, tickets, notifications, loyalty — but **only the Products/Stock/Auth core is implemented here**, to keep the architecture clear.
+> 💡 The database schema (`laundry.sql`) also contains tables for supporting capabilities such as tickets, notifications, loyalty, and customer reviews.
 
 ### Why this project is interesting
 
@@ -46,7 +46,7 @@
 | 🔐 | **Complete JWT Authentication** | Login, register, logout with token blacklist and automatic cleanup |
 | 📦 | **FEFO Stock Allocation** | *(First-Expired, First-Out)* — dedicated business policy to consume batches that expire first |
 | 🧪 | **Comprehensive Test Coverage** | Domain, application services, adapters (unit + integration with Testcontainers) |
-| 🐳 | **Docker Ready** | MySQL + Adminer orchestrated via `docker-compose` |
+| 🐳 | **Docker Ready** | Multi-stage Java image and API, MySQL, and Adminer orchestrated via Docker Compose |
 | 🤖 | **Spring AI (Gemini)** | Ready-to-use component for customer review sentiment analysis |
 | 🛡️ | **Role-based Access Control** | 4 roles (`ADMIN`, `MANAGER`, `EMPLOYEE`, `CUSTOMER`) enforced via `@PreAuthorize` |
 | 🧾 | **PDF Generation** | OpenPDF ready for tickets and receipts |
@@ -95,13 +95,13 @@ src/
 │   │   │   │       ├── dto/
 │   │   │   │       ├── payloads/
 │   │   │   │       └── security/
-│   │   │   └── output/
-│   │   │       ├── persistence/
-│   │   │       │   ├── adapter/
-│   │   │       │   ├── jpaEntities/
-│   │   │       │   └── jpaRepositories/
-│   │   │       ├── security/
-│   │   │       └── token/
+│   │   │   │       └── output/
+│   │   │   │           ├── persistence/
+│   │   │   │           │   ├── adapter/
+│   │   │   │           │   ├── jpaEntities/
+│   │   │   │           │   └── jpaRepositories/
+│   │   │   │           ├── security/
+│   │   │   │           └── token/
 │   │   ├── application/
 │   │   │   ├── port/
 │   │   │   │   ├── input/
@@ -110,8 +110,7 @@ src/
 │   │   ├── config/
 │   │   └── domain/
 │   │       ├── dto/
-│   │       ├── entities/
-│   │       └── exception/
+│   │       └── entities/
 │   └── resources/
 │       ├── db/
 │       ├── application.yml
@@ -146,7 +145,7 @@ src/
 | ⚙️ | **Configuration** | spring-dotenv (automatic `.env` loading) |
 | 🧪 | **Tests** | JUnit 5 · Mockito · AssertJ · Testcontainers (MySQL) · ArchUnit |
 | 📦 | **Build** | Maven |
-| 🐳 | **Ops** | Docker Compose (MySQL + Adminer) |
+| 🐳 | **Ops** | Multi-stage Docker image · Docker Compose (API + MySQL + Adminer) |
 
 ---
 
@@ -155,19 +154,19 @@ src/
 ### Prerequisites
 
 - **Java 21+**
-- **Maven 3.9+**
-- **Docker & Docker Compose** (for the database)
+- **Maven 3.9+** (if running outside Docker)
+- **Docker Engine and Docker Compose v2**
 
 ### 1. Clone the repository
 
 ```bash
 git clone https://github.com/KENMOEmarc/Vividela-Hex.git
-cd Simple-Hexagonal-Vividela-Backend
+cd Vividela-Hex
 ```
 
 ### 2. Configure environment variables
 
-Create a `.env` file at the project root (it is automatically loaded by `docker-compose` **and** by the application via `spring-dotenv`):
+Create a `.env` file at the project root. Docker Compose uses it for configuration; when running the application directly, `spring-dotenv` loads it for local development.
 
 ```dotenv
 # --- Database ---
@@ -180,12 +179,12 @@ SPRING_DATASOURCE_USERNAME=vividela_user
 SPRING_DATASOURCE_PASSWORD=change-me
 
 # --- JWT ---
-JWT_SECRET=a-secret-key-of-at-least-32-characters
+JWT_SECRET=replace-with-a-random-secret-of-at-least-32-characters
 JWT_EXPIRATION=86400000
 JWT_BLACKLIST_CLEANUP_FIXED_DELAY_MS=3600000
 
 # --- Mail (optional in dev) ---
-MAIL_HOST=smtp.gmail.com
+MAIL_HOST=
 MAIL_PORT=587
 MAIL_USERNAME=
 MAIL_PASSWORD=
@@ -206,31 +205,52 @@ SERVER_PORT=8080
 
 > ⚠️ Never commit your `.env` file — it is already ignored by `.gitignore`.
 
-### 3. Start the infrastructure (MySQL + Adminer)
+### Docker image
+
+The root `Dockerfile` uses Maven and Java 21 to package the application, then copies only the executable JAR into a Java 21 runtime image. The runtime runs as an unprivileged user. `.dockerignore` keeps local build output, IDE files, Git metadata, and `.env` files out of the build context. Unit tests are not compiled or run as part of the image build; run them separately with Maven.
+
+To build the image without starting the database stack:
 
 ```bash
-docker-compose up -d
+docker build -t vividela-backend:1.0.0 .
+```
+
+### 3. Run the complete application stack in Docker
+
+```bash
+docker compose up --build -d
 ```
 
 | 🧱 | Service | URL | Credentials |
 |---|---|---|---|
+| 🚀 | **API** | http://localhost:8080/api | JWT authentication |
 | 🗄️ | **MySQL** | `localhost:3307` | defined in `.env` |
 | 🖥️ | **Adminer** (database UI) | http://localhost:8081 | server `mysql` |
 
-### 4. Build and run the application
+Compose waits until MySQL passes its health check before starting the API. To inspect logs or stop the stack:
 
 ```bash
-./mvnw clean install
-./mvnw spring-boot:run
+docker compose logs -f app
+docker compose down
 ```
 
-The API will then be available at:
+To keep the MySQL data volume when stopping the stack, use `docker compose down` without `-v`.
 
-```text
-http://localhost:8080/api
+### 4. Build and run locally with Maven (optional)
+
+Start only the database services:
+
+```bash
+docker compose up -d mysql adminer
 ```
 
-### 5. Check that everything works
+Then run the application from the project root. Maven is used directly because this repository does not include the Maven Wrapper:
+
+```bash
+mvn spring-boot:run
+```
+
+The API is available at `http://localhost:8080/api`. A quick registration check:
 
 ```bash
 curl -X POST http://localhost:8080/api/auth/register \
@@ -290,6 +310,29 @@ curl -X POST http://localhost:8080/api/auth/register \
 | 🛠️ | `PUT` | `/stock/batches/{batchId}` | 🛡️ `ADMIN`, `MANAGER`, `EMPLOYEE` | Manual adjustment of a batch |
 | 📤 | `POST` | `/stock/consume` | 🛡️ `ADMIN`, `MANAGER`, `EMPLOYEE` | Stock consumption (automatic **FEFO** allocation) |
 
+### 🧾 Orders — `/orders`
+
+| 🎬 | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 📋 | `GET` | `/orders` | 🛡️ `ADMIN`, `MANAGER`, `EMPLOYEE` | List orders |
+| 🔍 | `GET` | `/orders/{id}` | 🛡️ `ADMIN`, `MANAGER`, `EMPLOYEE` | Order details |
+| 👤 | `GET` | `/orders/client/{clientId}` | 🛡️ `ADMIN`, `MANAGER`, `EMPLOYEE` | Orders for a client |
+| ➕ | `POST` | `/orders` | 🛡️ `ADMIN`, `MANAGER`, `EMPLOYEE` | Create an order |
+| ✏️ | `PUT` | `/orders/{id}` | 🛡️ `ADMIN`, `MANAGER`, `EMPLOYEE` | Update order details and status |
+| 🗑️ | `DELETE` | `/orders/{id}` | 🛡️ `ADMIN` | Delete an order |
+
+### 💳 Payments — `/payments`
+
+| 🎬 | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| ➕ | `POST` | `/payments` | 🛡️ `ADMIN`, `MANAGER`, `EMPLOYEE` | Record a pending payment |
+| 🔍 | `GET` | `/payments/{id}` | 🛡️ `ADMIN`, `MANAGER`, `EMPLOYEE` | Payment details |
+| 📋 | `GET` | `/payments/order/{orderId}` | 🛡️ `ADMIN`, `MANAGER`, `EMPLOYEE` | Payments for an order |
+| ✅ | `PUT` | `/payments/{id}/confirm` | 🛡️ `ADMIN`, `MANAGER`, `EMPLOYEE` | Confirm a pending payment |
+| ❌ | `PUT` | `/payments/{id}/fail` | 🛡️ `ADMIN`, `MANAGER`, `EMPLOYEE` | Mark a pending payment as failed |
+
+Recording a payment requires `orderId`, `paymentMethod` (`CASH`, `CHECK`, or `MOBILE_PAYMENT`), and a positive `amount`. Optional fields are `payerPhone` and `transactionReference`.
+
 ---
 
 ## 🔐 Security
@@ -309,31 +352,31 @@ The project applies a strict testing policy aligned with the hexagonal boundarie
 
 ```bash
 # Run the full test suite
-./mvnw test
+mvn test
 
 # Only unit tests (domain + application)
-./mvnw test -Dtest="ken.vivid.domain.**,ken.vivid.application.**"
+mvn test -Dtest="ken.vivid.domain.**,ken.vivid.application.**"
 ```
 
 | 🧪 | Tested layer | Test type | Tools |
 |---|---|---|---|
 | 🎯 | `domain/entities` | Pure unit | JUnit 5, AssertJ |
 | ⚙️ | `application/service` | Unit with mocks | JUnit 5, Mockito |
-| 🗄️ | `adapter/output/persistence` | Integration | Testcontainers (real MySQL) |
-| 🔐 | `adapter/output/security` & `token` | Unit | JUnit 5 |
+| 🗄️ | `adapter/input/web/output/persistence` | Integration | Testcontainers (real MySQL) |
+| 🔐 | `adapter/input/web/output/security` & `token` | Unit | JUnit 5 |
 | 🏛️ | Hexagonal boundaries | Structural | **ArchUnit** |
 
 ---
 
 ## 🗺️ Roadmap
 
-This "Simple Hexagonal" edition focuses on the **Auth + Products + Stock** foundation. The schema base (`laundry.sql`) and configuration (`application.yml`) already anticipate the following extensions:
+The core API currently includes **authentication, products, stock, orders, and payments**. Supporting capabilities that can be expanded include:
 
-- [ ] Management of **orders** and **drop-off tickets** (with barcodes and expiration tracking)
+- [ ] **Drop-off tickets** (with barcodes and expiration tracking)
 - [ ] **Customer notifications** (email/SMS via Twilio) with retry and escalation
 - [ ] **Loyalty program** (points, thresholds, caps)
-- [ ] **Customer review sentiment analysis** via Gemini (Spring AI) — the integration is already wired in the configuration
-- [ ] Generation of **PDF receipts** (OpenPDF already included as a dependency)
+- [ ] **Customer review sentiment analysis** via Gemini (Spring AI)
+- [ ] **PDF receipts** (OpenPDF is already included as a dependency)
 
 ---
 
