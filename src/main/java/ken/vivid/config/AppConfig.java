@@ -1,12 +1,15 @@
 package ken.vivid.config;
 
 import ken.vivid.application.port.output.auth.*;
+import ken.vivid.application.port.output.payment.LoadPayment;
+import ken.vivid.application.port.output.payment.SavePayment;
 import ken.vivid.application.port.output.product.*;
 import ken.vivid.application.port.output.product.stock.LoadStock;
 import ken.vivid.application.port.output.product.stock.SaveStock;
 import ken.vivid.application.port.output.product.stock.movement.SaveStockMovement;
 import ken.vivid.application.port.output.order.*;
 import ken.vivid.application.service.auth.AuthService;
+import ken.vivid.application.service.payment.PaymentService;
 import ken.vivid.application.service.product.ProductService;
 import ken.vivid.application.service.product.StockAllocationPolicy;
 import ken.vivid.application.service.product.StockService;
@@ -63,5 +66,11 @@ public class AppConfig {
     @Bean
     public OrderService orderService(LoadOrder loadOrder, SaveOrder saveOrder, DeleteOrder deleteOrder) {
         return new OrderService(loadOrder, saveOrder, deleteOrder);
+    }
+
+    @Bean
+    public PaymentService paymentService(LoadPayment loadPayment, SavePayment savePayment,
+                                         LoadOrder loadOrder, SaveOrder saveOrder) {
+        return new PaymentService(loadPayment, savePayment, loadOrder, saveOrder);
     }
 }
