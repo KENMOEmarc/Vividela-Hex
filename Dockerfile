@@ -5,7 +5,7 @@ WORKDIR /workspace
 COPY pom.xml lombok.config ./
 COPY src ./src
 
-RUN mvn -B -Dmaven.test.skip=true package
+RUN mvn -B -Dmaven.test.skip=false package
 
 FROM eclipse-temurin:21-jre-alpine AS runtime
 
