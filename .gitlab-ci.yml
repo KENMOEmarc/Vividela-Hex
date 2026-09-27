@@ -9,7 +9,7 @@ variables:
 
 build-job: # This job runs in the build stage, which runs first.
   stage: build
-  image: maven:3.8-openjdk-18
+  image: maven:3.9.9-eclipse-temurin-21-alpine
   script:
     - echo "Compiling the code..."
     - mvn package -B
