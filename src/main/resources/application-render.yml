@@ -1,0 +1,45 @@
+# =============================================================================
+# application-render.yml — profil de TEST sur Render (plan gratuit)
+# Activation : SPRING_PROFILES_ACTIVE=render
+# Ne remplace pas application.yml : seules les clés ci-dessous sont surchargées.
+# =============================================================================
+
+spring:
+  main:
+    lazy-initialization: true       # démarrage plus rapide avec 0,1 CPU
+
+  jpa:
+    hibernate:
+      # Crée les tables sur la base vide d'Aiven.
+      # Quand le schéma existe, repasse à "validate" (ou ajoute Flyway).
+      ddl-auto: update
+    show-sql: false
+
+  datasource:
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 1
+      connection-timeout: 30000
+      max-lifetime: 1500000         # 25 min, sous la limite de coupure des connexions inactives
+
+  # Valeurs par défaut pour que le démarrage n'échoue pas si une variable manque.
+  # (Rappel : l'envoi SMTP reste bloqué sur Render gratuit.)
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+
+server:
+  port: ${SERVER_PORT:8080}
+  forward-headers-strategy: framework   # Render termine le HTTPS devant l'application
+  tomcat:
+    threads:
+      max: 20
+
+logging:
+  level:
+    root: warn
+    ken.vivid: info
+    org.springframework: warn
+  # Pas de logging.file : Render collecte la sortie standard
