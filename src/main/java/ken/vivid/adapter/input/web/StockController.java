@@ -51,7 +51,7 @@ public class StockController {
     }
 
     //Get all stock
-    @GetMapping("/batches")
+    @GetMapping
     public ResponseEntity<ApiResponse<List<StockDto>>> getAllBatches() {
         log.debug("Request to fetch all stock batches");
         List<StockDto> batches = loadStock.loadAll().stream()
