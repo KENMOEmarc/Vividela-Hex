@@ -53,7 +53,7 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("All users", userDtos));
     }
 
-    @GetMapping("users")
+    @GetMapping("/customers")
     public ResponseEntity<ApiResponse<List<UserDto>>> getAllCustomers(Authentication authentication) {
         User actingUser = getCurrentUserUseCase.getCurrentUser(authentication.getName());
         log.info("Fetching all customers requested by principal={}", actingUser.getUserName());
