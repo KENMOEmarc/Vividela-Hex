@@ -46,7 +46,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<LoginResponse>> register(@Valid @RequestBody RegisterRequest request) {
         log.info("Registration request received for email={}", request.getEmail());
         AuthResult result = registerUseCase.register(new StoreCommand(
-                null,
+                0L,
                 request.getFirstName(),
                 request.getLastName(),
                 request.getUserName(),
@@ -65,7 +65,7 @@ public class AuthController {
                                                       Authentication authentication) {
         log.info("Admin/manager account creation requested for email={} by principal={}", request.getEmail(), authentication.getName());
         User user = registerUseCase.store(new StoreCommand(
-                null,
+                0L,
                 request.getFirstName(),
                 request.getLastName(),
                 request.getUserName(),
