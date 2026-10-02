@@ -17,4 +17,4 @@ COPY --from=build --chown=spring:spring /workspace/target/vividela-backend-1.0.0
 USER spring:spring
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75.0", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=60.0", "-XX:+UseSerialGC", "-XX:TieredStopAtLevel=1", "-Xss512k", "-jar", "/app/app.jar"]
