@@ -1,5 +1,6 @@
 package ken.vivid.adapter.output.persistence.jpaRepositories.auth;
 
+import aj.org.objectweb.asm.commons.Remapper;
 import ken.vivid.adapter.output.persistence.jpaEntities.auth.UserJpaEntity;
 import ken.vivid.domain.dto.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +21,6 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
     boolean existsByUserName(String userName);
 
     long countByRole(Role role);
+
+    Optional<UserJpaEntity> findByEmail(String email);
 }

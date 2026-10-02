@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -39,6 +40,12 @@ public class UserPersistenceAdapter implements LoadUser, SaveUser, DeleteUser {
     }
 
     @Override
+    public List<User> loadAllUsers() {
+        log.debug("Loading all users");
+        return jpaRepository.findAll().stream().map(this::toDomain).toList();
+    }
+
+    @Override
     public boolean existsByEmail(String email) {
         boolean exists = jpaRepository.existsByEmail(email);
         log.debug("Email existence check for {} => {}", email, exists);
@@ -57,6 +64,11 @@ public class UserPersistenceAdapter implements LoadUser, SaveUser, DeleteUser {
         long count = jpaRepository.countByRole(role);
         log.debug("Counted {} user(s) for role={}", count, role);
         return count;
+    }
+
+    @Override
+    public Optional<User> loadByEmail(String email) {
+        return jpaRepository.findByEmail(email).map(this::toDomain);
     }
 
     @Override

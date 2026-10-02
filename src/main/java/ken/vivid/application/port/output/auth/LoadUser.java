@@ -1,8 +1,10 @@
 package ken.vivid.application.port.output.auth;
 
+import jdk.dynalink.linker.LinkerServices;
 import ken.vivid.domain.dto.Role;
 import ken.vivid.domain.entities.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface LoadUser {
@@ -13,9 +15,13 @@ public interface LoadUser {
 
     Optional<User> loadByUserName(String userName);
 
+    List<User> loadAllUsers();
+
     boolean existsByEmail(String email);
 
     boolean existsByUserName(String userName);
 
     long countByRole(Role role);
+
+    Optional<User> loadByEmail(String email);
 }

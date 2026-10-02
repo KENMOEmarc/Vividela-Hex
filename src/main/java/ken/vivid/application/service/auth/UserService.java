@@ -1,5 +1,6 @@
 package ken.vivid.application.service.auth;
 
+import ken.vivid.application.port.input.auth.GetUsersUseCase;
 import ken.vivid.application.port.input.auth.updateUser.ChangePasswordCommand;
 import ken.vivid.application.port.input.auth.updateUser.ChangePasswordUseCase;
 import ken.vivid.application.port.input.auth.deleteUser.DeleteUserUseCase;
@@ -17,7 +18,9 @@ import ken.vivid.domain.dto.Role;
 import ken.vivid.adapter.exception.InvalidRequestException;
 import ken.vivid.adapter.exception.ResourceNotFoundException;
 
-public class UserService implements UpdateUserUseCase,
+import java.util.List;
+
+public class UserService implements GetUsersUseCase, UpdateUserUseCase,
         DeleteUserUseCase, ChangePasswordUseCase {
 
     private final LoadUser loadUser;
@@ -79,5 +82,28 @@ public class UserService implements UpdateUserUseCase,
         }
 
         deleteUser.delete(userId);
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return loadUser.loadById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User not found with id: " + id));
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return loadUser.loadByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("User not found with email: " + email));
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return loadUser.loadByUserName(username).orElseThrow(
+                () -> new ResourceNotFoundException("User not found with username: " + username));
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return loadUser.loadAllUsers();
     }
 }

@@ -5,12 +5,14 @@ import ken.vivid.adapter.input.web.dto.UserDto;
 import ken.vivid.adapter.input.web.payloads.ApiResponse;
 import ken.vivid.adapter.input.web.payloads.auth.ChangePasswordRequest;
 import ken.vivid.adapter.input.web.payloads.auth.UpdateUserRequest;
+import ken.vivid.application.port.input.auth.GetUsersUseCase;
 import ken.vivid.application.port.input.auth.updateUser.ChangePasswordCommand;
 import ken.vivid.application.port.input.auth.updateUser.ChangePasswordUseCase;
 import ken.vivid.application.port.input.auth.deleteUser.DeleteUserUseCase;
 import ken.vivid.application.port.input.auth.GetCurrentUserUseCase;
 import ken.vivid.application.port.input.auth.updateUser.UpdateCommand;
 import ken.vivid.application.port.input.auth.updateUser.UpdateUserUseCase;
+import ken.vivid.application.port.input.product.GetProductUseCase;
 import ken.vivid.domain.entities.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/users")
@@ -27,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final GetCurrentUserUseCase getCurrentUserUseCase;
+    private final GetUsersUseCase getUsersUseCase;
     private final UpdateUserUseCase updateUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
     private final ChangePasswordUseCase changePasswordUseCase;
@@ -36,6 +41,16 @@ public class UserController {
         log.debug("Fetching authenticated user profile for principal={}", authentication.getName());
         var user = getCurrentUserUseCase.getCurrentUser(authentication.getName());
         return ResponseEntity.ok(ApiResponse.success("User profile", UserDto.from(user)));
+    }
+
+    // Get all users
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<UserDto>>> getAllUsers(Authentication authentication) {
+        User actingUser = getCurrentUserUseCase.getCurrentUser(authentication.getName());
+        log.info("Fetching all users requested by principal={}", actingUser.getUserName());
+        List<User> users = getUsersUseCase.getAllUsers();
+        List<UserDto> userDtos = users.stream().map(UserDto::from).toList();
+        return ResponseEntity.ok(ApiResponse.success("All users", userDtos));
     }
 
     @PutMapping("/{id}")

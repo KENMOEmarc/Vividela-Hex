@@ -13,6 +13,10 @@ public interface StockJpaRepository extends JpaRepository<StockJpaEntity, Long> 
     List<StockJpaEntity> findByProductIdAndCurrentQuantityGreaterThanOrderByExpirationDateAsc(
             Long productId, BigDecimal quantity);
 
+    //Find stock with all product
+    @Query("SELECT s FROM StockJpaEntity s LEFT JOIN FETCH s.productId")
+    List<StockJpaEntity> findAllWithProduct();
+
     @Query("SELECT COALESCE(SUM(s.currentQuantity), 0) FROM StockJpaEntity s WHERE s.productId = :productId")
     BigDecimal sumCurrentQuantityByProductId(@Param("productId") Long productId);
 }
