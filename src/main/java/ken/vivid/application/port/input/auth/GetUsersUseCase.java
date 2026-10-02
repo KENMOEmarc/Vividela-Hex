@@ -9,4 +9,6 @@ public interface GetUsersUseCase {
     User getUserByEmail(String email);
     User getUserByUsername(String username);
     List<User> getAllUsers();
+
+    List<User> getAllCustomers();
 }

@@ -106,4 +106,11 @@ public class UserService implements GetUsersUseCase, UpdateUserUseCase,
     public List<User> getAllUsers() {
         return loadUser.loadAllUsers();
     }
+
+    @Override
+    public List<User> getAllCustomers() {
+        return loadUser.loadAllUsers().stream()
+                .filter(user -> user.getRole() == Role.CUSTOMER)
+                .toList();
+    }
 }

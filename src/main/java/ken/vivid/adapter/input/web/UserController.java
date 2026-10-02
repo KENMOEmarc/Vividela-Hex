@@ -53,6 +53,15 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("All users", userDtos));
     }
 
+    @GetMapping("users")
+    public ResponseEntity<ApiResponse<List<UserDto>>> getAllCustomers(Authentication authentication) {
+        User actingUser = getCurrentUserUseCase.getCurrentUser(authentication.getName());
+        log.info("Fetching all customers requested by principal={}", actingUser.getUserName());
+        List<User> customers = getUsersUseCase.getAllCustomers();
+        List<UserDto> customerDtos = customers.stream().map(UserDto::from).toList();
+        return ResponseEntity.ok(ApiResponse.success("All customers", customerDtos));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<UserDto>> update(@PathVariable Long id,
                                                        @Valid @RequestBody UpdateUserRequest request,
