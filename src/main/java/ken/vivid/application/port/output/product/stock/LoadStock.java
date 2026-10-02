@@ -3,6 +3,7 @@ package ken.vivid.application.port.output.product.stock;
 import ken.vivid.domain.entities.product.Stock;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,4 +14,5 @@ public interface LoadStock {
 
     BigDecimal totalQuantityByProduct(Long productId);
 
+    List<Stock> loadAll();
 }

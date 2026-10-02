@@ -50,6 +50,17 @@ public class StockController {
         return ResponseEntity.ok(ApiResponse.success("Products below threshold", lowStockProducts));
     }
 
+    //Get all stock
+    @GetMapping("/batches")
+    public ResponseEntity<ApiResponse<List<StockDto>>> getAllBatches() {
+        log.debug("Request to fetch all stock batches");
+        List<StockDto> batches = loadStock.loadAll().stream()
+                .map(StockDto::from)
+                .toList();
+        log.debug("Returned {} batch(es)", batches.size());
+        return ResponseEntity.ok(ApiResponse.success("All stock batches", batches));
+    }
+
     @GetMapping("/product/{productId}/batches")
     public ResponseEntity<ApiResponse<List<StockDto>>> getBatchesByProduct(@PathVariable Long productId) {
         log.debug("Request to fetch stock batches for productId={}", productId);

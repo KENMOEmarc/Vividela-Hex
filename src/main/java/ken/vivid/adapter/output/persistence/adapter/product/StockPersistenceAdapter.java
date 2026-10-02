@@ -47,6 +47,13 @@ public class StockPersistenceAdapter implements LoadStock, SaveStock {
     }
 
     @Override
+    public List<Stock> loadAll() {
+        return jpaRepository.findAll().stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
+    @Override
     public Stock save(Stock stock) {
         log.info("Saving stock batch for productId={} quantity={}", stock.getProductId(), stock.getQuantity());
         StockJpaEntity saved = jpaRepository.save(toEntity(stock));
