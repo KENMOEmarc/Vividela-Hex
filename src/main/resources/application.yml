@@ -13,7 +13,7 @@
 # --- Application identity ---
 app:
   cors:
-    allowed-origins=${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173,https://vivid-frontend-lemon.vercel.app/}:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173,https://vivid-frontend-lemon.vercel.app}
 
 spring:
   application:
@@ -111,7 +111,7 @@ spring:
 # SERVER
 # ---------------------------------------------------------------------------
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${PORT:${SERVER_PORT:8080}}
   servlet:
     context-path: /api             # Prefix for all URLs: /api/...
   error:
