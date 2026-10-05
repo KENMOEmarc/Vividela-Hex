@@ -7,13 +7,14 @@ public class Stock {
     private final Long id;
     private final Long productId;
     private BigDecimal quantity;
-    private BigDecimal unitPrice;
-    private Instant entryDate;
-    private Instant expirationDate;
+    private final BigDecimal unitPrice;
+    private final Instant entryDate;
+    private final Instant expirationDate;
+    private final Instant createdAt;
     private Instant updatedAt;
 
     private Stock(Long id, Long productId, BigDecimal quantity, Instant updatedAt,
-                  Instant entryDate, BigDecimal unitPrice, Instant expirationDate) {
+                  Instant entryDate, BigDecimal unitPrice, Instant expirationDate, Instant createdAt) {
         this.id = id;
         this.productId = productId;
         this.quantity = quantity;
@@ -21,6 +22,7 @@ public class Stock {
         this.entryDate = entryDate;
         this.unitPrice = unitPrice;
         this.expirationDate = expirationDate;
+        this.createdAt = createdAt;
     }
 
     public static Stock createStock(Long id, Long productId, BigDecimal quantity, Instant updatedAt,
@@ -61,7 +63,7 @@ public class Stock {
             throw new IllegalArgumentException("ID cannot be null");
         }
 
-        return new Stock(id, productId, quantity, updatedAt, entryDate, unitPrice, expirationDate);
+        return new Stock(id, productId, quantity, updatedAt, entryDate, unitPrice, expirationDate, Instant.now());
     }
 
     public BigDecimal getUnitPrice() {
@@ -98,5 +100,9 @@ public class Stock {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 }

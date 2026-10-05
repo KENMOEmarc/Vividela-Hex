@@ -16,6 +16,7 @@ public record StockDto(
         BigDecimal unitPrice,
         Instant entryDate,
         Instant expirationDate,
+        Instant createdAt,
         Instant updatedAt
 ) {
     public static StockDto from(Stock stock) {
@@ -27,6 +28,7 @@ public record StockDto(
                 .entryDate(stock.getEntryDate())
                 .expirationDate(stock.getExpirationDate())
                 .updatedAt(stock.getUpdatedAt())
+                .createdAt(stock.getCreatedAt())
                 .build();
     }
 
