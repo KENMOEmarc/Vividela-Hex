@@ -1,6 +1,5 @@
 package ken.vivid.application.port.output.auth;
 
-import jdk.dynalink.linker.LinkerServices;
 import ken.vivid.domain.dto.Role;
 import ken.vivid.domain.entities.User;
 
