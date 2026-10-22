@@ -1,5 +1,8 @@
 package ken.vivid.config;
 
+import ken.vivid.application.port.output.article.DeleteArticle;
+import ken.vivid.application.port.output.article.LoadArticle;
+import ken.vivid.application.port.output.article.SaveArticle;
 import ken.vivid.application.port.output.auth.*;
 import ken.vivid.application.port.output.payment.LoadPayment;
 import ken.vivid.application.port.output.payment.SavePayment;
@@ -8,6 +11,12 @@ import ken.vivid.application.port.output.product.stock.LoadStock;
 import ken.vivid.application.port.output.product.stock.SaveStock;
 import ken.vivid.application.port.output.product.stock.movement.SaveStockMovement;
 import ken.vivid.application.port.output.order.*;
+import ken.vivid.application.port.output.serviceprice.DeleteServicePrice;
+import ken.vivid.application.port.output.serviceprice.LoadServicePrice;
+import ken.vivid.application.port.output.serviceprice.LoadServicePriceCatalog;
+import ken.vivid.application.port.output.serviceprice.SaveServicePrice;
+import ken.vivid.application.service.ServicePriceService;
+import ken.vivid.application.service.article.ArticleService;
 import ken.vivid.application.service.auth.AuthService;
 import ken.vivid.application.service.payment.PaymentService;
 import ken.vivid.application.service.product.ProductService;
@@ -72,5 +81,21 @@ public class AppConfig {
     public PaymentService paymentService(LoadPayment loadPayment, SavePayment savePayment,
                                          LoadOrder loadOrder, SaveOrder saveOrder) {
         return new PaymentService(loadPayment, savePayment, loadOrder, saveOrder);
+    }
+
+    @Bean
+    public ArticleService articleService(LoadArticle loadArticle,
+                                         SaveArticle saveArticle,
+                                         DeleteArticle deleteArticle,
+                                         LoadOrder loadOrder,
+                                         LoadServicePrice loadServicePrice) {
+        return new ArticleService(loadArticle, saveArticle, deleteArticle, loadOrder, loadServicePrice);
+    }
+
+    @Bean
+    public ServicePriceService servicePriceService(LoadServicePriceCatalog loadServicePriceCatalog,
+                                                  SaveServicePrice saveServicePrice,
+                                                  DeleteServicePrice deleteServicePrice) {
+        return new ServicePriceService(loadServicePriceCatalog, saveServicePrice, deleteServicePrice);
     }
 }

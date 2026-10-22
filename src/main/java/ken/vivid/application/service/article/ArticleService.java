@@ -17,16 +17,16 @@ import ken.vivid.application.port.input.article.updateArticle.UpdateArticleComma
 import ken.vivid.application.port.input.article.updateArticle.UpdateArticleUseCase;
 import ken.vivid.application.port.output.article.DeleteArticle;
 import ken.vivid.application.port.output.article.LoadArticle;
-import ken.vivid.application.port.output.article.LoadServicePrice;
 import ken.vivid.application.port.output.article.SaveArticle;
 import ken.vivid.application.port.output.order.LoadOrder;
+import ken.vivid.application.port.output.serviceprice.LoadServicePrice;
 import ken.vivid.domain.dto.ArticleStatus;
 import ken.vivid.domain.dto.ClothingType;
+import ken.vivid.domain.dto.MovementType;
 import ken.vivid.domain.dto.ServiceType;
 import ken.vivid.domain.entities.article.AppliedService;
 import ken.vivid.domain.entities.article.Article;
 import ken.vivid.domain.entities.order.Order;
-import ken.vivid.domain.entities.order.OrderStatus;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -81,7 +81,7 @@ public class ArticleService implements CreateArticleUseCase, GetArticleUseCase, 
 
         Order order = loadOrder.loadOrderById(command.orderId())
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found : " + command.orderId()));
-        if (order.getStatus() == OrderStatus.DELIVERED || order.getStatus() == OrderStatus.CANCELLED) {
+        if (order.getStatus() == MovementType.OrderStatus.DELIVERED || order.getStatus() == MovementType.OrderStatus.CANCELLED) {
             throw new InvalidRequestException(
                     "Cannot add an article to an order in status " + order.getStatus());
         }
