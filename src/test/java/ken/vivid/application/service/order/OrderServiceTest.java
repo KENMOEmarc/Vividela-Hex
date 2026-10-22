@@ -7,8 +7,8 @@ import ken.vivid.application.port.input.order.updateOrder.UpdateOrderCommand;
 import ken.vivid.application.port.output.order.DeleteOrder;
 import ken.vivid.application.port.output.order.LoadOrder;
 import ken.vivid.application.port.output.order.SaveOrder;
+import ken.vivid.domain.dto.MovementType;
 import ken.vivid.domain.entities.order.Order;
-import ken.vivid.domain.entities.order.OrderStatus;
 import ken.vivid.domain.entities.payment.PaymentStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -66,7 +66,7 @@ class OrderServiceTest {
             assertThat(saved.getClientId()).isEqualTo(7L);
             assertThat(saved.getOrderDate()).isEqualTo(LocalDate.now());
             assertThat(saved.getExpectedDeliveryDate()).isEqualTo(LocalDate.now().plusDays(3));
-            assertThat(saved.getStatus()).isEqualTo(OrderStatus.RECEIVED);
+            assertThat(saved.getStatus()).isEqualTo(MovementType.OrderStatus.RECEIVED);
             assertThat(saved.getPaymentStatus()).isEqualTo(PaymentStatus.PENDING);
             assertThat(saved.getNotes()).isEqualTo("Rush");
             assertThat(saved.getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
@@ -81,7 +81,7 @@ class OrderServiceTest {
         @Test
         @DisplayName("returns the requested order")
         void getByIdShouldReturnOrder() {
-            Order order = anOrder(1L, OrderStatus.RECEIVED, PaymentStatus.PENDING);
+            Order order = anOrder(1L, MovementType.OrderStatus.RECEIVED, PaymentStatus.PENDING);
             given(loadOrder.loadOrderById(1L)).willReturn(Optional.of(order));
 
             assertThat(orderService.getById(1L)).isSameAs(order);
@@ -100,8 +100,8 @@ class OrderServiceTest {
         @Test
         @DisplayName("delegates all-order and client-order queries to the load port")
         void queriesShouldReturnPortResults() {
-            Order first = anOrder(1L, OrderStatus.RECEIVED, PaymentStatus.PENDING);
-            Order second = anOrder(2L, OrderStatus.READY, PaymentStatus.COMPLETED);
+            Order first = anOrder(1L, MovementType.OrderStatus.RECEIVED, PaymentStatus.PENDING);
+            Order second = anOrder(2L, MovementType.OrderStatus.READY, PaymentStatus.COMPLETED);
             given(loadOrder.loadOrderAll()).willReturn(List.of(first, second));
             given(loadOrder.loadOrderByClientId(7L)).willReturn(List.of(first));
 
@@ -117,16 +117,16 @@ class OrderServiceTest {
         @Test
         @DisplayName("applies permitted order changes and persists the order")
         void updateShouldChangeAndSaveOrder() {
-            Order order = anOrder(1L, OrderStatus.IN_PROGRESS, PaymentStatus.PENDING);
+            Order order = anOrder(1L, MovementType.OrderStatus.IN_PROGRESS, PaymentStatus.PENDING);
             given(loadOrder.loadOrderById(1L)).willReturn(Optional.of(order));
             given(saveOrder.save(any(Order.class))).willAnswer(invocation -> invocation.getArgument(0));
 
             Order updated = orderService.update(new UpdateOrderCommand(
-                    1L, LocalDate.now().plusDays(5), OrderStatus.READY, PaymentStatus.COMPLETED,
+                    1L, LocalDate.now().plusDays(5), MovementType.OrderStatus.READY, PaymentStatus.COMPLETED,
                     "Ready for pickup", new BigDecimal("125.00"), new BigDecimal("10.00")));
 
             assertThat(updated).isSameAs(order);
-            assertThat(updated.getStatus()).isEqualTo(OrderStatus.READY);
+            assertThat(updated.getStatus()).isEqualTo(MovementType.OrderStatus.READY);
             assertThat(updated.getPaymentStatus()).isEqualTo(PaymentStatus.COMPLETED);
             assertThat(updated.getNotes()).isEqualTo("Ready for pickup");
             assertThat(updated.getTotalAmount()).isEqualByComparingTo("125.00");
@@ -138,10 +138,10 @@ class OrderServiceTest {
         @DisplayName("rejects a transition out of a terminal status without saving")
         void updateShouldRejectTransitionFromDeliveredOrder() {
             given(loadOrder.loadOrderById(1L))
-                    .willReturn(Optional.of(anOrder(1L, OrderStatus.DELIVERED, PaymentStatus.COMPLETED)));
+                    .willReturn(Optional.of(anOrder(1L, MovementType.OrderStatus.DELIVERED, PaymentStatus.COMPLETED)));
 
             assertThatThrownBy(() -> orderService.update(new UpdateOrderCommand(
-                    1L, null, OrderStatus.IN_PROGRESS, PaymentStatus.PENDING, null,
+                    1L, null, MovementType.OrderStatus.IN_PROGRESS, PaymentStatus.PENDING, null,
                     BigDecimal.TEN, BigDecimal.ZERO)))
                     .isInstanceOf(InvalidStateTransitionException.class);
 
@@ -154,7 +154,7 @@ class OrderServiceTest {
             given(loadOrder.loadOrderById(404L)).willReturn(Optional.empty());
 
             assertThatThrownBy(() -> orderService.update(new UpdateOrderCommand(
-                    404L, null, OrderStatus.READY, PaymentStatus.PENDING, null,
+                    404L, null, MovementType.OrderStatus.READY, PaymentStatus.PENDING, null,
                     BigDecimal.TEN, BigDecimal.ZERO)))
                     .isInstanceOf(ResourceNotFoundException.class);
 
@@ -176,7 +176,7 @@ class OrderServiceTest {
         }
     }
 
-    private Order anOrder(Long id, OrderStatus status, PaymentStatus paymentStatus) {
+    private Order anOrder(Long id, MovementType.OrderStatus status, PaymentStatus paymentStatus) {
         Instant now = Instant.now();
         return Order.create(id, 7L, LocalDate.now(), null, null, status, paymentStatus,
                 null, new BigDecimal("100.00"), BigDecimal.ZERO, now, now);

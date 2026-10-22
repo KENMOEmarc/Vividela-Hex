@@ -1,5 +1,6 @@
 package ken.vivid.domain.entities.order;
 
+import ken.vivid.domain.dto.MovementType;
 import ken.vivid.domain.entities.payment.PaymentStatus;
 
 import java.math.BigDecimal;
@@ -12,7 +13,7 @@ public class Order {
     private LocalDate orderDate;
     private LocalDate expectedDeliveryDate;
     private LocalDate deliveredAt;
-    private OrderStatus status;
+    private MovementType.OrderStatus status;
     private PaymentStatus paymentStatus;
     private String notes;
     private BigDecimal totalAmount;
@@ -21,7 +22,7 @@ public class Order {
     private Instant updatedAt;
 
     private Order(Long id, Long clientId, LocalDate orderDate, LocalDate expectedDeliveryDate,
-                  LocalDate deliveredAt, OrderStatus status, PaymentStatus paymentStatus,
+                  LocalDate deliveredAt, MovementType.OrderStatus status, PaymentStatus paymentStatus,
                   String notes, BigDecimal totalAmount, BigDecimal discountAmount,
                   Instant createdAt, Instant updatedAt) {
         this.id = id;
@@ -40,7 +41,7 @@ public class Order {
 
     public static Order create(Long id, Long clientId, LocalDate orderDate,
                                LocalDate expectedDeliveryDate, LocalDate deliveredAt,
-                               OrderStatus status, PaymentStatus paymentStatus, String notes,
+                               MovementType.OrderStatus status, PaymentStatus paymentStatus, String notes,
                                BigDecimal totalAmount, BigDecimal discountAmount,
                                Instant createdAt, Instant updatedAt) {
         if (clientId == null || orderDate == null || status == null || paymentStatus == null
@@ -62,7 +63,7 @@ public class Order {
     public LocalDate getOrderDate() { return orderDate; }
     public LocalDate getExpectedDeliveryDate() { return expectedDeliveryDate; }
     public LocalDate getDeliveredAt() { return deliveredAt; }
-    public OrderStatus getStatus() { return status; }
+    public MovementType.OrderStatus getStatus() { return status; }
     public PaymentStatus getPaymentStatus() { return paymentStatus; }
     public String getNotes() { return notes; }
     public BigDecimal getTotalAmount() { return totalAmount; }
@@ -70,7 +71,7 @@ public class Order {
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
 
-    public void update(LocalDate expectedDeliveryDate, OrderStatus status,
+    public void update(LocalDate expectedDeliveryDate, MovementType.OrderStatus status,
                        PaymentStatus paymentStatus, String notes,
                        BigDecimal totalAmount, BigDecimal discountAmount, Instant updatedAt) {
         if (status == null || paymentStatus == null || totalAmount == null || discountAmount == null
@@ -85,7 +86,7 @@ public class Order {
         this.notes = notes;
         this.totalAmount = totalAmount;
         this.discountAmount = discountAmount;
-        if (status == OrderStatus.DELIVERED && deliveredAt == null) {
+        if (status == MovementType.OrderStatus.DELIVERED && deliveredAt == null) {
             deliveredAt = LocalDate.now();
         }
         this.updatedAt = updatedAt;

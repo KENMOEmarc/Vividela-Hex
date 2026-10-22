@@ -10,8 +10,8 @@ import ken.vivid.application.port.input.order.updateOrder.UpdateOrderUseCase;
 import ken.vivid.application.port.output.order.DeleteOrder;
 import ken.vivid.application.port.output.order.LoadOrder;
 import ken.vivid.application.port.output.order.SaveOrder;
+import ken.vivid.domain.dto.MovementType;
 import ken.vivid.domain.entities.order.Order;
-import ken.vivid.domain.entities.order.OrderStatus;
 import ken.vivid.domain.entities.payment.PaymentStatus;
 
 import java.math.BigDecimal;
@@ -35,7 +35,7 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase,
     public Order create(CreateOrderCommand command) {
         Instant now = Instant.now();
         return saveOrder.save(Order.create(null, command.clientId(), LocalDate.now(),
-                command.expectedDeliveryDate(), null, OrderStatus.RECEIVED,
+                command.expectedDeliveryDate(), null, MovementType.OrderStatus.RECEIVED,
                 PaymentStatus.PENDING, command.notes(),
                 amount(command.totalAmount()), amount(command.discountAmount()), now, now));
     }
@@ -66,9 +66,9 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase,
         deleteOrder.delete(id);
     }
 
-    private void validateTransition(OrderStatus current, OrderStatus next) {
-        if (next == null || current == OrderStatus.DELIVERED && next != OrderStatus.DELIVERED
-                || current == OrderStatus.CANCELLED && next != OrderStatus.CANCELLED) {
+    private void validateTransition(MovementType.OrderStatus current, MovementType.OrderStatus next) {
+        if (next == null || current == MovementType.OrderStatus.DELIVERED && next != MovementType.OrderStatus.DELIVERED
+                || current == MovementType.OrderStatus.CANCELLED && next != MovementType.OrderStatus.CANCELLED) {
             throw new InvalidStateTransitionException("Invalid order status transition: " + current + " -> " + next);
         }
     }

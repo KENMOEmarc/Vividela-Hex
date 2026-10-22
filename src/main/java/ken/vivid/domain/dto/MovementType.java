@@ -3,5 +3,14 @@ package ken.vivid.domain.dto;
 public enum MovementType {
     CONSUMPTION,
     RESTOCK,
-    ADJUSTMENT
+    ADJUSTMENT;
+
+    public enum OrderStatus {
+        RECEIVED,
+        PENDING,
+        IN_PROGRESS,
+        READY,
+        DELIVERED,
+        CANCELLED
+    }
 }

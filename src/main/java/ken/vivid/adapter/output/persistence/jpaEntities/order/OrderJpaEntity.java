@@ -1,7 +1,7 @@
 package ken.vivid.adapter.output.persistence.jpaEntities.order;
 
 import jakarta.persistence.*;
-import ken.vivid.domain.entities.order.OrderStatus;
+import ken.vivid.domain.dto.MovementType;
 import ken.vivid.domain.entities.payment.PaymentStatus;
 import lombok.*;
 
@@ -32,7 +32,7 @@ public class OrderJpaEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrderStatus status;
+    private MovementType.OrderStatus status;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

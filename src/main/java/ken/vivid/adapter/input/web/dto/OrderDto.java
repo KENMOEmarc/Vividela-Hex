@@ -1,6 +1,7 @@
 package ken.vivid.adapter.input.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import ken.vivid.domain.dto.MovementType;
 import ken.vivid.domain.entities.order.*;
 import ken.vivid.domain.entities.payment.PaymentStatus;
 
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record OrderDto(Long id, Long clientId, LocalDate orderDate, LocalDate expectedDeliveryDate,
-                       LocalDate deliveredAt, OrderStatus status, PaymentStatus paymentStatus,
+                       LocalDate deliveredAt, MovementType.OrderStatus status, PaymentStatus paymentStatus,
                        String notes, BigDecimal totalAmount, BigDecimal discountAmount,
                        Instant createdAt, Instant updatedAt) {
     public static OrderDto from(Order order) {

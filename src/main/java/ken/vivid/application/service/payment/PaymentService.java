@@ -11,8 +11,8 @@ import ken.vivid.application.port.output.order.LoadOrder;
 import ken.vivid.application.port.output.order.SaveOrder;
 import ken.vivid.application.port.output.payment.LoadPayment;
 import ken.vivid.application.port.output.payment.SavePayment;
+import ken.vivid.domain.dto.MovementType;
 import ken.vivid.domain.entities.order.Order;
-import ken.vivid.domain.entities.order.OrderStatus;
 import ken.vivid.domain.entities.payment.Payment;
 import ken.vivid.domain.entities.payment.PaymentStatus;
 
@@ -67,7 +67,7 @@ public class PaymentService implements RecordPaymentUseCase, ConfirmPaymentUseCa
         Order order = loadOrder.loadOrderById(command.orderId())
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found : " + command.orderId()));
 
-        if (order.getStatus() == OrderStatus.CANCELLED) {
+        if (order.getStatus() == MovementType.OrderStatus.CANCELLED) {
             throw new InvalidStateTransitionException(
                     "Cannot record a payment: order " + order.getId() + " is cancelled");
         }

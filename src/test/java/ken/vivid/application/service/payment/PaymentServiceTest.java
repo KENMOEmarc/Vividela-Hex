@@ -10,8 +10,8 @@ import ken.vivid.application.port.output.order.LoadOrder;
 import ken.vivid.application.port.output.order.SaveOrder;
 import ken.vivid.application.port.output.payment.LoadPayment;
 import ken.vivid.application.port.output.payment.SavePayment;
+import ken.vivid.domain.dto.MovementType;
 import ken.vivid.domain.entities.order.Order;
-import ken.vivid.domain.entities.order.OrderStatus;
 import ken.vivid.domain.entities.payment.Payment;
 import ken.vivid.domain.entities.payment.PaymentMethodType;
 import ken.vivid.domain.entities.payment.PaymentStatus;
@@ -87,7 +87,7 @@ class PaymentServiceTest {
         @DisplayName("does not accept payments for a cancelled order")
         void recordShouldRejectCancelledOrder() {
             given(loadOrder.loadOrderById(1L))
-                    .willReturn(Optional.of(anOrder(1L, OrderStatus.CANCELLED, PaymentStatus.PENDING)));
+                    .willReturn(Optional.of(anOrder(1L, MovementType.OrderStatus.CANCELLED, PaymentStatus.PENDING)));
 
             assertThatThrownBy(() -> paymentService.record(command(BigDecimal.TEN, "ref-1")))
                     .isInstanceOf(InvalidStateTransitionException.class);
@@ -99,7 +99,7 @@ class PaymentServiceTest {
         @DisplayName("rejects a transaction reference that has already been recorded")
         void recordShouldRejectDuplicateReference() {
             given(loadOrder.loadOrderById(1L))
-                    .willReturn(Optional.of(anOrder(1L, OrderStatus.RECEIVED, PaymentStatus.PENDING)));
+                    .willReturn(Optional.of(anOrder(1L, MovementType.OrderStatus.RECEIVED, PaymentStatus.PENDING)));
             given(loadPayment.loadByTransactionReference("duplicate"))
                     .willReturn(Optional.of(PaymentJpaEntity.builder().id(22L).build()));
 
@@ -114,7 +114,7 @@ class PaymentServiceTest {
         @DisplayName("prevents committed payments from exceeding the net order balance")
         void recordShouldRejectOverpayment() {
             given(loadOrder.loadOrderById(1L))
-                    .willReturn(Optional.of(anOrder(1L, OrderStatus.RECEIVED, PaymentStatus.PENDING)));
+                    .willReturn(Optional.of(anOrder(1L, MovementType.OrderStatus.RECEIVED, PaymentStatus.PENDING)));
             given(loadPayment.loadByTransactionReference("ref-1")).willReturn(Optional.empty());
             given(loadPayment.sumAmountByOrderIdAndStatusIn(1L,
                     EnumSet.of(PaymentStatus.PENDING, PaymentStatus.COMPLETED)))
@@ -131,7 +131,7 @@ class PaymentServiceTest {
         @DisplayName("saves an allowed payment in pending status")
         void recordShouldSavePendingPayment() {
             given(loadOrder.loadOrderById(1L))
-                    .willReturn(Optional.of(anOrder(1L, OrderStatus.RECEIVED, PaymentStatus.PENDING)));
+                    .willReturn(Optional.of(anOrder(1L, MovementType.OrderStatus.RECEIVED, PaymentStatus.PENDING)));
             given(loadPayment.loadByTransactionReference("ref-1")).willReturn(Optional.empty());
             given(loadPayment.sumAmountByOrderIdAndStatusIn(1L,
                     EnumSet.of(PaymentStatus.PENDING, PaymentStatus.COMPLETED)))
@@ -158,7 +158,7 @@ class PaymentServiceTest {
         @DisplayName("completes a pending payment and reconciles a fully paid order")
         void confirmShouldCompletePaymentAndOrder() {
             Payment payment = aPayment(10L, 1L, PaymentStatus.PENDING);
-            Order order = anOrder(1L, OrderStatus.RECEIVED, PaymentStatus.PENDING);
+            Order order = anOrder(1L, MovementType.OrderStatus.RECEIVED, PaymentStatus.PENDING);
             given(loadPayment.loadById(10L)).willReturn(Optional.of(payment));
             given(savePayment.save(payment)).willReturn(payment);
             given(loadOrder.loadOrderById(1L)).willReturn(Optional.of(order));
@@ -177,7 +177,7 @@ class PaymentServiceTest {
         @DisplayName("does not overwrite a manually refunded order status")
         void confirmShouldPreserveRefundedOrderStatus() {
             Payment payment = aPayment(10L, 1L, PaymentStatus.PENDING);
-            Order order = anOrder(1L, OrderStatus.RECEIVED, PaymentStatus.REFUNDED);
+            Order order = anOrder(1L, MovementType.OrderStatus.RECEIVED, PaymentStatus.REFUNDED);
             given(loadPayment.loadById(10L)).willReturn(Optional.of(payment));
             given(savePayment.save(payment)).willReturn(payment);
             given(loadOrder.loadOrderById(1L)).willReturn(Optional.of(order));
@@ -244,7 +244,7 @@ class PaymentServiceTest {
                 "555-0100", transactionReference, 8L);
     }
 
-    private Order anOrder(Long id, OrderStatus status, PaymentStatus paymentStatus) {
+    private Order anOrder(Long id, MovementType.OrderStatus status, PaymentStatus paymentStatus) {
         Instant now = Instant.now();
         return Order.create(id, 7L, LocalDate.now(), null, null, status, paymentStatus,
                 null, new BigDecimal("100.00"), BigDecimal.ZERO, now, now);

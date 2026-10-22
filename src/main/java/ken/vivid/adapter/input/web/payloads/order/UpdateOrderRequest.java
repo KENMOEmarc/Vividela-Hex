@@ -1,7 +1,7 @@
 package ken.vivid.adapter.input.web.payloads.order;
 
 import jakarta.validation.constraints.*;
-import ken.vivid.domain.entities.order.OrderStatus;
+import ken.vivid.domain.dto.MovementType;
 import ken.vivid.domain.entities.payment.PaymentStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Setter
 public class UpdateOrderRequest {
     @FutureOrPresent private LocalDate expectedDeliveryDate;
-    @NotNull private OrderStatus status;
+    @NotNull private MovementType.OrderStatus status;
     @NotNull private PaymentStatus paymentStatus;
     @Size(max = 1000) private String notes;
     @NotNull @DecimalMin("0.00") private BigDecimal totalAmount;
