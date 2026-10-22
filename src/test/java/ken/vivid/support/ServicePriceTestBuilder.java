@@ -2,7 +2,7 @@ package ken.vivid.support;
 
 import ken.vivid.domain.dto.ClothingType;
 import ken.vivid.domain.dto.ServiceType;
-import ken.vivid.domain.entities.serviceprice.ServicePrice;
+import ken.vivid.domain.entities.service.ServicePrice;
 
 import java.math.BigDecimal;
 

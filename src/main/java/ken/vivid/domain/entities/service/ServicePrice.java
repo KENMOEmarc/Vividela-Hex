@@ -1,4 +1,4 @@
-package ken.vivid.domain.entities.serviceprice;
+package ken.vivid.domain.entities.service;
 
 import ken.vivid.domain.dto.ClothingType;
 import ken.vivid.domain.dto.ServiceType;

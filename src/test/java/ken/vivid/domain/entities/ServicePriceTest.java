@@ -1,14 +1,15 @@
-package ken.vivid.domain.entities.service;
+package ken.vivid.domain.entities;
 
 import ken.vivid.domain.dto.ClothingType;
 import ken.vivid.domain.dto.ServiceType;
-import ken.vivid.domain.entities.serviceprice.ServicePrice;
+import ken.vivid.domain.entities.service.ServicePrice;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
+
 
 import java.math.BigDecimal;
 
